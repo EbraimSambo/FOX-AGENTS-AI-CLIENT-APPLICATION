@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import DialogContent, {
   Dialog,
   DialogClose,
@@ -11,8 +10,7 @@ import DialogContent, {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import React from "react";
 import { useDirection } from "@radix-ui/react-direction";
-import { X } from "lucide-react";
-import { RiSearchLine } from "@remixicon/react";
+import { TextSearch, X } from "lucide-react";
 const Chats = () => {
   const direction = useDirection();
 
@@ -182,9 +180,8 @@ const Chats = () => {
   return (
     <Dialog>
       <DialogTrigger asChild className="px-1">
-        <button className="transition-colors duration-150 flex items-center gap-2 p-2 rounded-md  w-full hover:bg-muted-foreground/20 border border-transparent hover:border-muted-foreground/30">
-          <RiSearchLine className="size-6" />
-          <span className="text-md">Encontrar Conversas</span>
+        <button className="h-9 w-9 rounded-md flex items-center justify-center hover:bg-muted-foreground/15">
+          <TextSearch className="size-6" />
         </button>
       </DialogTrigger>
       <DialogContent

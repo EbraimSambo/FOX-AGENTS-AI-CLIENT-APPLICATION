@@ -1,10 +1,13 @@
+import { getFirstAndLastName } from "@/helpers/name";
+import { useSession } from "next-auth/react";
 import React from "react";
 
 const GreetUser = () => {
+   const session = useSession()
   return (
     <div className="flex items-center justify-center h-full">
       <h2 className="text-white text-3xl">
-        Que bom te ver, Ebraim. O que há de novo?
+       {session.data?.user ? `Que bom te ver, ${getFirstAndLastName(session.data.user.name as string)} O que há de novo?`: "Olá, que bom ver-te. O que há de novo?" }
       </h2>
     </div>
   );

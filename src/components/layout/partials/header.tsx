@@ -1,14 +1,17 @@
 "use client";
 import { generateUUID } from "@/helpers/generate-uuid";
-import { RiSideBarLine } from "@remixicon/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
 import ButtonNewChat from "./button-new-chat";
+import Chats from "@/components/chat/chats/chats";
+import { useSession } from "next-auth/react";
+import AuthDialog from "@/components/auth/auth-dialog";
+import UserMenu from "@/components/user/user-menu";
 
 const Header = () => {
+  const session = useSession()
   const router = useRouter();
-
   const handleClick = () => {
     const uuid = generateUUID();
     router.push(`/chats/${uuid}`);
@@ -23,11 +26,11 @@ const Header = () => {
         <h1 className="font-semibold text-lg">Fox Agents</h1>
       </button>
       <div className="">
-        <div className="flex items-center">
-          <button className="h-9 w-9 rounded-md flex items-center justify-center hover:bg-muted-foreground/15">
-            <RiSideBarLine className="size-6" />
-          </button>
+        <div className="flex items-center gap-2">
+          {session.status == "authenticated" &&  <Chats />}
           <ButtonNewChat />
+          {session.status != "authenticated" &&  <AuthDialog />}
+          {session.status == "authenticated" && <UserMenu  />}
         </div>
       </div>
     </div>

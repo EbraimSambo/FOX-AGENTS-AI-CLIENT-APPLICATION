@@ -4,9 +4,7 @@ import { useForm } from "react-hook-form";
 import z from "zod";
 import { suggestions } from "../components/chat/data-suggestions";
 import {
-  InfiniteData,
   useMutation,
-  useQueryClient,
 } from "@tanstack/react-query";
 import { createAxiosInstance } from "@/config/axios";
 import { AxiosError } from "axios";
