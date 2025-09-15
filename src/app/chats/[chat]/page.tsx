@@ -1,11 +1,13 @@
-import GreetUser from "@/components/chat/greet-user";
-import PromptAi from "@/components/chat/prompt-ai";
+import Chat from "@/components/chat/chat";
 
-export default function Home() {
+interface Params{
+  params: Promise<{
+    chat: string
+  }>
+}
+export default async function Home({params}:Params) {
+  const {chat} = await params
   return (
-    <div className="h-full flex items-center justify-center max-w-4xl w-full mx-auto flex-col gap-6">
-      <GreetUser />
-      <PromptAi />
-    </div>
+    <Chat chatUUID={chat} />
   );
 }

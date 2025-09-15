@@ -1,6 +1,5 @@
 "use client"
 import React from 'react'
-import Sidebar from './partials/sidebar';
 
 const AppLayout = ({
     children,
@@ -9,9 +8,8 @@ const AppLayout = ({
 }>) => {
     const [menuOpen, setMenuOpen] = React.useState(false)
     return (
-        <div className={`bg-[#323130] h-screen w-full ${menuOpen && 'p-2'} flex transition-all`}>
-           <Sidebar menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
-            <main className='bg-[#262626] h-full w-full rounded-lg'>
+        <div className={` bg-[#262626] transition-all`}>
+            <main>
                 {children}
             </main>
         </div>

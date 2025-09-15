@@ -11,8 +11,8 @@ const ButtonNewChat = () => {
       router.push(`/chats/${uuid}`)
     }
     return (
-        <button onClick={handleClick} className="h-9 w-9 rounded-md flex items-center justify-center hover:bg-muted-foreground/15">
-            <IoCreateOutline className="size-6 text-white" />
+        <button onClick={handleClick} className="h-9 w-9 rounded-md flex items-center justify-center hover:bg-muted-foreground/25">
+            <IoCreateOutline className="size-7 text-white" />
         </button>
     )
 }

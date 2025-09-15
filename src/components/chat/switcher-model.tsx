@@ -15,13 +15,13 @@ const SwitcherModel = () => {
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild className='outline-none'>
         <button
-          className='flex items-center gap-2 hover:bg-muted-foreground/25 p-2 rounded-lg' >
+          className='flex items-center gap-2 hover:bg-muted-foreground/25 p-2 rounded-lg relative' >
           {<model.icon className='size-6' />}
           <span>{model.name}</span>
           <RiArrowDownSLine className='size-5' />
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-78 p-1 bg-[#262626] border-none text-white translate-x-32 -translate-y-[120%] ">
+      <DropdownMenuContent className="w-78 p-1 bg-[#262626] border-none text-white translate-x-32 ">
         <DropdownMenuRadioGroup >
           {models.map((modelLOcal, index) => (
             <DropdownMenuRadioItem

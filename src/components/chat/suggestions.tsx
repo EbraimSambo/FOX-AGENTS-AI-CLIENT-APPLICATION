@@ -50,7 +50,7 @@ const Suggestions = ({
 
       {selectedCategory && textareaValue.trim() === selectedCategory.category && (
           <ScrollArea className="h-[340px]">
-            <div className="bg-muted-foreground/15 shadow rounded-lg p-2">
+            <div className=" shadow rounded-lg p-2 bg-[#323130]">
               {selectedCategory.suggestions.map((suggestion, index) => (
                 <div
                   className="p-3 cursor-pointer hover:bg-muted-foreground/20 rounded-md text-sm transition-colors duration-150 border border-transparent hover:border-muted-foreground/30"
