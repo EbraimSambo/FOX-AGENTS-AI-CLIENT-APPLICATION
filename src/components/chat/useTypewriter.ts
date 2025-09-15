@@ -1,68 +1,72 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from "react";
 
 interface UseTypewriterOptions {
-  text: string
-  speed?: number
-  onComplete?: () => void
+  text: string;
+  speed?: number;
+  onComplete?: () => void;
 }
 
-export const useTypewriter = ({ text, speed = 30, onComplete }: UseTypewriterOptions) => {
-  const [displayedText, setDisplayedText] = useState('')
-  const [isTyping, setIsTyping] = useState(false)
-  const [shouldStop, setShouldStop] = useState(false)
+export const useTypewriter = ({
+  text,
+  speed = 30,
+  onComplete,
+}: UseTypewriterOptions) => {
+  const [displayedText, setDisplayedText] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const [shouldStop, setShouldStop] = useState(false);
 
   useEffect(() => {
     if (!text || shouldStop) {
       if (shouldStop) {
-        setDisplayedText(text)
-        setIsTyping(false)
-        onComplete?.()
+        setDisplayedText(text);
+        setIsTyping(false);
+        onComplete?.();
       }
-      return
+      return;
     }
 
-    setIsTyping(true)
-    setDisplayedText('')
-    
-    let i = 0
+    setIsTyping(true);
+    setDisplayedText("");
+
+    let i = 0;
     const timer = setInterval(() => {
       if (shouldStop) {
-        setDisplayedText(text)
-        setIsTyping(false)
-        clearInterval(timer)
-        onComplete?.()
-        return
+        setDisplayedText(text);
+        setIsTyping(false);
+        clearInterval(timer);
+        onComplete?.();
+        return;
       }
 
       if (i < text.length) {
-        setDisplayedText(text.slice(0, i + 1))
-        i++
+        setDisplayedText(text.slice(0, i + 1));
+        i++;
       } else {
-        setIsTyping(false)
-        clearInterval(timer)
-        onComplete?.()
+        setIsTyping(false);
+        clearInterval(timer);
+        onComplete?.();
       }
-    }, speed)
+    }, speed);
 
     return () => {
-      clearInterval(timer)
-    }
-  }, [text, speed, shouldStop, onComplete])
+      clearInterval(timer);
+    };
+  }, [text, speed, shouldStop, onComplete]);
 
   const stopTyping = () => {
-    setShouldStop(true)
-  }
+    setShouldStop(true);
+  };
 
   const resetTyping = () => {
-    setShouldStop(false)
-    setDisplayedText('')
-    setIsTyping(false)
-  }
+    setShouldStop(false);
+    setDisplayedText("");
+    setIsTyping(false);
+  };
 
   return {
     displayedText,
     isTyping,
     stopTyping,
-    resetTyping
-  }
-}
+    resetTyping,
+  };
+};

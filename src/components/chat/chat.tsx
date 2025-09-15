@@ -1,82 +1,95 @@
-"use client"
-import { Content } from '@/core/chat';
-import React from 'react'
-import PromptAi from './prompt-ai';
-import ContentChat from './Content-Chat';
-import { usePrompt } from '@/hooks/use-prompt';
-import { userGetMessagesByChatUUID } from '@/hooks/get-chat';
-import LoaderChat from './loader-chat';
+"use client";
+import { Content } from "@/core/chat";
+import React from "react";
+import PromptAi from "./prompt-ai";
+import ContentChat from "./Content-Chat";
+import { usePrompt } from "@/hooks/use-prompt";
+import { userGetMessagesByChatUUID } from "@/hooks/get-chat";
+import LoaderChat from "./loader-chat";
 
 interface Props {
-    chatUUID: string
+  chatUUID: string;
 }
 
 const Chat = ({ chatUUID }: Props) => {
-    const query = userGetMessagesByChatUUID(chatUUID)
-    const [messages, setMessages] = React.useState<Content[]>([]);
+  const query = userGetMessagesByChatUUID(chatUUID);
+  const [messages, setMessages] = React.useState<Content[]>([]);
+  const [showLoader, setShowLoader] = React.useState(true);
+  React.useEffect(() => {
+    if (query.data?.pages) {
+      const allMessages = query.data.pages.flatMap(
+        (page) =>
+          page.items.map((t) => ({
+            ...t,
+            error: null,
+            pending: false,
+            isWriting: false,
+          })) || [],
+      );
+      setMessages(allMessages);
+    }
+  }, [query.data]);
 
-    React.useEffect(() => {
-        if (query.data?.pages) {
-            const allMessages = query.data.pages.flatMap(page => page.items.map((t) => ({
-                ...t,
-                error: null,
-                pending: false,
-                isWriting: false
-            })) || []);
-            setMessages(allMessages);
-        }
-    }, [query.data]);
+  React.useEffect(() => {
+    if (!query.isLoading) {
+      const timeout = setTimeout(() => {
+        setShowLoader(false);
+      }, 2000); // 2000ms = 2 segundos
 
-    const {
-        form,
-        handleCategoryClick,
-        handleKeyPress,
-        handleSuggestionClick,
-        handleTextareaChange,
-        handleSend,
-        setSelectedCategory,
-        selectedCategory,
-        mutation,
-        isPending,
-        handleRetry,
-        stopRequest,
-        forceDone,
-        setForceDone,
-        handleTypewriterComplete // Adicione esta nova função
-    } = usePrompt({
-        chatUUID,
-        setMessages,
-        messages,
-    })
+      return () => clearTimeout(timeout);
+    }
+  }, [query.isLoading]);
 
-    if (query.isLoading) return <LoaderChat />
+  const {
+    form,
+    handleCategoryClick,
+    handleKeyPress,
+    handleSuggestionClick,
+    handleTextareaChange,
+    handleSend,
+    setSelectedCategory,
+    selectedCategory,
+    mutation,
+    isPending,
+    handleRetry,
+    stopRequest,
+    forceDone,
+    setForceDone,
+    handleTypewriterComplete, // Adicione esta nova função
+  } = usePrompt({
+    chatUUID,
+    setMessages,
+    messages,
+  });
 
-    return (
-        <div className="max-w-3xl w-full mx-auto pt-12 4 pb-40 ">
-            <ContentChat 
-                setForceDone={setForceDone} 
-                forceDone={forceDone} 
-                stopRequest={stopRequest} 
-                handleRetry={handleRetry} 
-                messages={messages}
-                handleTypewriterComplete={handleTypewriterComplete} // Passe a função para ContentChat
-            />
-            <PromptAi
-                stopRequest={stopRequest}
-                isPending={isPending}
-                showSuggestions={messages?.length == 0}
-                form={form}
-                handleCategoryClick={handleCategoryClick}
-                handleKeyPress={handleKeyPress}
-                handleSend={handleSend}
-                handleSuggestionClick={handleSuggestionClick}
-                handleTextareaChange={handleTextareaChange}
-                mutation={mutation}
-                selectedCategory={selectedCategory}
-                setSelectedCategory={setSelectedCategory}
-            />
-        </div>
-    )
-}
+  if (query.isLoading || showLoader) return <LoaderChat />;
 
-export default Chat
+  return (
+    <div className="max-w-3xl w-full mx-auto pt-12 pb-40 ">
+      <ContentChat
+        setForceDone={setForceDone}
+        forceDone={forceDone}
+        stopRequest={stopRequest}
+        handleRetry={handleRetry}
+        messages={messages}
+        handleTypewriterComplete={handleTypewriterComplete} // Passe a função para ContentChat
+      />
+      <PromptAi
+        stopRequest={stopRequest}
+        isPending={isPending}
+        showSuggestions={messages?.length == 0}
+        form={form}
+        handleCategoryClick={handleCategoryClick}
+        handleKeyPress={handleKeyPress}
+        handleSend={handleSend}
+        handleSuggestionClick={handleSuggestionClick}
+        handleTextareaChange={handleTextareaChange}
+        mutation={mutation}
+        selectedCategory={selectedCategory}
+        setSelectedCategory={setSelectedCategory}
+      />
+    </div>
+  );
+};
+
+export default Chat;

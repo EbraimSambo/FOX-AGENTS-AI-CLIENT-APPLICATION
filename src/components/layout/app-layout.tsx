@@ -1,19 +1,17 @@
-"use client"
-import React from 'react'
+import React from "react";
+import Header from "./partials/header";
 
 const AppLayout = ({
-    children,
+  children,
 }: Readonly<{
-    children: React.ReactNode;
+  children: React.ReactNode;
 }>) => {
-    const [menuOpen, setMenuOpen] = React.useState(false)
-    return (
-        <div className={` bg-[#262626] transition-all`}>
-            <main>
-                {children}
-            </main>
-        </div>
-    )
-}
+  return (
+    <div className={` bg-[#262626] transition-all`}>
+      <Header />
+      <main>{children}</main>
+    </div>
+  );
+};
 
-export default AppLayout
+export default AppLayout;
