@@ -42,7 +42,7 @@ const AuthDialog = () => {
                     </Button>
                     <Button onClick={() => providerSignIn("github")} className='h-12 w-[320px] rounded-full font-bold bg-[#262626] border-muted-foreground border'>
                         {loadingProvider === 'github' ? (
-                              <ProgressCircle value={15} size={15} strokeWidth={3} className="text-white animate-spin" />
+                              <ProgressCircle value={15} size={15} strokeWidth={2} className="text-white animate-spin" />
                         ) : (
                             <>
                                 <FaGithub /> Continuar com GitLab
