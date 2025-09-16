@@ -17,13 +17,13 @@ const Header = () => {
     router.push(`/chats/${uuid}?new=true`);
   };
   return (
-    <div className="fixed top-0 left-0 right-0 w-full text-white flex items-center justify-between p-4 px-8">
+    <div className="fixed top-0 left-0 right-0 w-full text-white flex items-center justify-between p-4 px-2 xl:px-8">
       <button
         onClick={handleClick}
         className="flex items-center gap-2 p-2 px-3 hover:bg-muted-foreground/20 rounded-xl"
       >
         <Image src={"/logo.png"} priority alt="logo-4" width={26} height={26} />
-        <h1 className="font-semibold text-lg">Fox Agents</h1>
+        <h1 className="font-semibold text-lg hidden xl:block">Fox Agents</h1>
       </button>
       <div className="">
         <div className="flex items-center gap-2">
