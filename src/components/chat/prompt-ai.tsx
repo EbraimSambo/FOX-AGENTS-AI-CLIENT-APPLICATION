@@ -14,6 +14,7 @@ import { Content, Message } from "@/core/chat";
 import { AxiosError, AxiosResponse } from "axios";
 import { UseMutationResult } from "@tanstack/react-query";
 import GreetUser from "./greet-user";
+
 interface Props {
   showSuggestions: boolean;
   handleCategoryClick: (categoryName: string) => void;
@@ -65,6 +66,7 @@ interface Props {
   isPending: boolean;
   stopRequest: () => void;
 }
+
 const PromptAi = ({
   selectedCategory,
   showSuggestions,
@@ -78,6 +80,12 @@ const PromptAi = ({
   stopRequest,
   setSelectedCategory,
 }: Props) => {
+  const promptValue = form.watch("prompt") || "";
+  const hasText = promptValue.trim().length > 0;
+  
+  // Botão desabilitado quando não há texto E não está em execução
+  const isButtonDisabled = !hasText && !isPending;
+
   return (
     <div className=" fixed bottom-0 right-0 left-0 bg-[#262626] px-8 xl:px-0">
       <div className="space-y-8 max-w-4xl w-full mx-auto pb-30">
@@ -123,7 +131,14 @@ const PromptAi = ({
                     handleSend();
                   }
                 }}
-                className={`h-10 w-10 flex items-center justify-center text-white rounded-md  ${isPending && "bg-muted-foreground/20 animate-pulse"} hover:bg-muted-foreground/20 transition-colors`}
+                disabled={isButtonDisabled}
+                className={`h-10 w-10 flex items-center justify-center text-white rounded-md transition-colors ${
+                  isPending 
+                    ? "bg-muted-foreground/20 animate-pulse hover:bg-muted-foreground/30" 
+                    : isButtonDisabled 
+                      ? "opacity-50 cursor-not-allowed" 
+                      : "hover:bg-muted-foreground/20"
+                }`}
               >
                 {!isPending && <RiSendPlaneLine className="size-5" />}
                 {isPending && <FaStop className="size-6" />}
@@ -135,7 +150,7 @@ const PromptAi = ({
           <Suggestions
             selectedCategory={selectedCategory}
             setSelectedCategory={setSelectedCategory}
-            textareaValue={form.watch("prompt") || ""}
+            textareaValue={promptValue}
             onSuggestionClick={handleSuggestionClick}
             onCategoryClick={handleCategoryClick}
           />
