@@ -52,7 +52,6 @@ function Code({
       </Comp>
       {showCopyButton && textToCopy && (
         <Button
-          mode="icon"
           size="sm"
           variant="ghost"
           className="h-4 w-4 p-0 opacity-60 hover:opacity-100"
