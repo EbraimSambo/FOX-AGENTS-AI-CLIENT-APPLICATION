@@ -1,11 +1,10 @@
 import { motion } from "framer-motion";
-import { RotateCw } from "lucide-react";
 import React from "react";
 import { Content } from "@/core/chat";
-import { RiFileCopyLine } from "@remixicon/react";
 import Typewriter from "../Typewriter";
 import MessageAgent from "./message-agent";
 import ProcessChat from "./process-chat";
+import UserMenssage from "./user-menssage";
 
 interface Props {
   message: Content;
@@ -39,29 +38,7 @@ export const Bubble: React.FC<Props> = ({
       ) : (
         <>
           {isUser ? (
-            <div className="text-end">
-              <div className="flex justify-end">
-                <p className="text-sm font-bold text-white p-2 px-4 max-w-full rounded-xl bg-muted-foreground/20 shadow-md break-words overflow-hidden">
-                  {message.content}
-                </p>
-              </div>
-              <div className="flex justify-end px-2">
-                <button
-                  onClick={() => navigator.clipboard.writeText(message.content)}
-                  className="h-8 w-8 flex items-center justify-center text-white"
-                >
-                  <RiFileCopyLine className="size-4" />
-                </button>
-                {message.error?.trim() && (
-                  <button
-                    onClick={onRetry}
-                    className="h-8 w-8 flex items-center justify-center text-white"
-                  >
-                    <RotateCw className="size-4" />
-                  </button>
-                )}
-              </div>
-            </div>
+            <UserMenssage message={message} onRetry={onRetry}/>
           ) : (
             <div className="p-2 rounded-xl text-white break-words relative">
               {message.isWriting ? (
