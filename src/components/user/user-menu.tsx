@@ -30,7 +30,7 @@ const UserMenu = () => {
           </Avatar>
         </DropdownMenuTrigger>
 
-        <DropdownMenuContent className='translate-y-1 z-90 w-[220px] bg-[#262626] border-muted-foreground text-white' align="end" sideOffset={5}>
+        <DropdownMenuContent className='translate-y-1 z-50 w-[220px] bg-[#262626] border-muted-foreground text-white' align="end" sideOffset={5}>
           <DropdownMenuItem className='cursor-pointer' disabled>
             <CircleUser className='text-white' />
             <span className='ml-1 text-xs text-white'>
@@ -49,7 +49,10 @@ const UserMenu = () => {
               <GiDreadSkull className='' />
               <span className='text-xs '>Atualizar Plano</span>
             </div>
-            <div onClick={() => setLogoutDialogOpen(true)} className='cursor-pointer flex items-center gap-2 px-2 hover:text-muted-foreground text-white'>
+            <div onClick={() => {
+              setLogoutDialogOpen(true)
+              setOpen(false)
+            }} className='cursor-pointer flex items-center gap-2 px-2 hover:text-muted-foreground text-white'>
               <span className='flex items-center gap-1'>
                 <LogOut className='size-5' />
                 <span className='text-xs'> Terminar sessao</span>
