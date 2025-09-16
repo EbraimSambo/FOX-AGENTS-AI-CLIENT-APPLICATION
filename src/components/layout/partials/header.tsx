@@ -17,7 +17,7 @@ const Header = () => {
     router.push(`/chats/${uuid}?new=true`);
   };
   return (
-    <div className="fixed top-0 left-0 right-0 w-full text-white flex items-center justify-between p-4 px-2 xl:px-8">
+    <div className="fixed top-0 left-0 right-0 w-full text-white flex items-center bg-[#262626] md:bg-transparent justify-between p-4 px-2 xl:px-8">
       <button
         onClick={handleClick}
         className="flex items-center gap-2 p-2 px-3 hover:bg-muted-foreground/20 rounded-xl"
