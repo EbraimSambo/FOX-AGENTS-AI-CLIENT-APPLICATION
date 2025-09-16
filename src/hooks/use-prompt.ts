@@ -3,9 +3,7 @@ import React, { use } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import { suggestions } from "../components/chat/data-suggestions";
-import {
-  useMutation,
-} from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createAxiosInstance } from "@/config/axios";
 import { AxiosError } from "axios";
 import { Content, Message, Pagination } from "@/core/chat";
@@ -22,7 +20,7 @@ interface Props {
   messages: Content[];
 }
 export const usePrompt = ({ chatUUID, setMessages, messages }: Props) => {
-  const { data: session } = useSession()
+  const { data: session } = useSession();
   const [lastMessageUser, setLastMessageUser] = React.useState<
     Content | undefined
   >(undefined);
@@ -36,20 +34,25 @@ export const usePrompt = ({ chatUUID, setMessages, messages }: Props) => {
   const [selectedCategory, setSelectedCategory] = React.useState<
     (typeof suggestions)[0] | undefined
   >(undefined);
-
+  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: async (data: z.infer<typeof schema>) => {
       return axios.post<{
         title: string;
         messages: Array<Message>;
-      }>(`/chats/${chatUUID}`, {
-        uuid: chatUUID,
-        ...data,
-      },{
-        headers:{
-          "user-x-uuid": session?.id
-        }
-      });
+      }>(
+        `/chats/${chatUUID}`,
+        {
+          uuid: chatUUID,
+          ...data,
+        },
+        {
+          headers: {
+            "user-x-uuid": session?.id,
+            "user-x-name": session?.user?.name,
+          },
+        },
+      );
     },
     onError: (error: AxiosError) => {
       setIsPending(false);
@@ -77,7 +80,7 @@ export const usePrompt = ({ chatUUID, setMessages, messages }: Props) => {
     },
     onSuccess: (res) => {
       setLastMessageUser(undefined);
-      console.log(res.data);
+      queryClient.invalidateQueries({ queryKey: ["chats"] });
       const modelReply = res.data.messages.find((m) => m.role === "MODEL");
 
       if (modelReply) {

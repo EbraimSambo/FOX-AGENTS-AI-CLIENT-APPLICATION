@@ -10,10 +10,9 @@ export const userGetMessagesByChatUUID = (chatUUID: string) => {
     queryKey: ["messages", chatUUID],
     queryFn: async ({ pageParam = 1 }) =>
       axios
-        .get<Pagination<Content>>(
-          `/chats/messages/${chatUUID}?page=${pageParam}&limit=20`,
-          {},
-        )
+        .get<
+          Pagination<Content>
+        >(`/chats/messages/${chatUUID}?page=${pageParam}&limit=20`, {})
         .then((res) => res.data),
     initialPageParam: 1,
     enabled: !!chatUUID,
@@ -23,21 +22,20 @@ export const userGetMessagesByChatUUID = (chatUUID: string) => {
   });
 };
 
-
-export const userGetChats = () => {
-   const { data: session } = useSession()
+export const userGetChats = (name?: string) => {
+  const { data: session } = useSession();
   return useInfiniteQuery({
-    queryKey: ["chats", session?.id],
+    queryKey: ["chats", session?.id, name],
     queryFn: async ({ pageParam = 1 }) =>
       axios
-        .get<Pagination<Chat>>(
-          `/chats?page=${pageParam}&limit=20`,
-          {
-            headers:{
-              "user-x-uuid": session?.id
-            }
+        .get<Pagination<Chat>>(`/chats?page=${pageParam}&limit=20`, {
+          headers: {
+            "user-x-uuid": session?.id,
           },
-        )
+          params: {
+            name,
+          },
+        })
         .then((res) => res.data),
     initialPageParam: 1,
     enabled: !!session?.id,
