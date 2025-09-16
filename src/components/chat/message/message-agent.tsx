@@ -4,8 +4,7 @@ import Markdown, { Components } from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import CodeMessage from './code-message'
 import Image from 'next/image'
-import { RiFileCopyLine, RiThumbDownLine, RiThumbUpLine } from '@remixicon/react'
-import { MoreHorizontal, RotateCw } from 'lucide-react'
+import ActonsMessageModel from './actons-message-model'
 const MessageAgent = ({ message }: { message: Content }) => {
   const components: Components = {
     code({ inline, className, children, ...props }: any) {
@@ -94,34 +93,7 @@ const MessageAgent = ({ message }: { message: Content }) => {
       <Markdown remarkPlugins={[remarkGfm]} components={components}>
         {message.content}
       </Markdown>
-      <div className="flex space-x-1 transition-opacity duration-200">
-        <button
-          onClick={() => navigator.clipboard.writeText(message.content)}
-          className="h-8 w-8 flex items-center justify-center text-white hover:text-gray-300"
-        >
-          <RiFileCopyLine className="size-4" />
-        </button>
-        <button
-          className="h-8 w-8 flex items-center justify-center text-white hover:text-gray-300"
-        >
-          <RotateCw className="size-4" />
-        </button>
-        <button
-          className="h-8 w-8 flex items-center justify-center text-white hover:text-gray-300"
-        >
-          <RiThumbUpLine className="size-5" />
-        </button>
-        <button
-          className="h-8 w-8 flex items-center justify-center text-white hover:text-gray-300"
-        >
-          <RiThumbDownLine className="size-5" />
-        </button>
-        <button
-          className="h-8 w-8 flex items-center justify-center text-white hover:text-gray-300"
-        >
-          <MoreHorizontal className="size-5" />
-        </button>
-      </div>
+      <ActonsMessageModel content={message} />
     </div>
   )
 }

@@ -1,6 +1,5 @@
 import { Content } from '@/core/chat';
-import { RiFileCopyLine } from '@remixicon/react'
-import { RotateCw } from 'lucide-react'
+import { Check, Copy, RotateCw } from 'lucide-react'
 import React from 'react'
 
 interface Props {
@@ -9,6 +8,18 @@ interface Props {
 }
 
 const UserMenssage = ({ message, onRetry }: Props) => {
+   const [copied, setCopied] = React.useState(false);
+   const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(message.content as string);
+      setCopied(true);
+
+      // depois de 2s volta ao normal
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Erro ao copiar: ", err);
+    }
+  };
   return (
     <div className="text-end group">
       <div className="flex justify-end">
@@ -18,10 +29,10 @@ const UserMenssage = ({ message, onRetry }: Props) => {
       </div>
       <div className="flex justify-end px-2 space-x-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
         <button
-          onClick={() => navigator.clipboard.writeText(message.content)}
+          onClick={handleCopy}
           className="h-8 w-8 flex items-center justify-center text-white hover:text-gray-300"
         >
-          <RiFileCopyLine className="size-4" />
+          {copied ? <Check size={16} /> : <Copy size={16} />}
         </button>
         {message.error?.trim() && (
           <button
