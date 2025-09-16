@@ -33,7 +33,7 @@ const AuthDialog = () => {
                     <h2 className="text-center text-base md:text-2xl ">
                         Conheça o seu companheiro de IA
                     </h2>
-                    <p className='text-center text-sm md:text-base'>Crie uma conta ou inicie sessão para manter todas as suas conversas. </p>
+                    <p className='text-center text-xs md:text-base'>Crie uma conta ou inicie sessão para manter todas as suas conversas. </p>
                 </div>
 
                 <div className="flex items-center justify-center flex-col gap-4">
