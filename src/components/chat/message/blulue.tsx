@@ -5,6 +5,7 @@ import { Content } from "@/core/chat";
 import { RiFileCopyLine } from "@remixicon/react";
 import Typewriter from "../Typewriter";
 import MessageAgent from "./message-agent";
+import ProcessChat from "./process-chat";
 
 interface Props {
   message: Content;
@@ -34,13 +35,7 @@ export const Bubble: React.FC<Props> = ({
       className="w-full"
     >
       {message.pending ? (
-        <div className="flex items-center gap-2">
-          <div className="inline-flex gap-1">
-            <span className="bg-muted-foreground inline-block h-3 w-3 animate-bounce rounded-full [animation-delay:-0.2s]" />
-            <span className="bg-muted-foreground inline-block h-3 w-3 animate-bounce rounded-full [animation-delay:-0.1s]" />
-            <span className="bg-muted-foreground inline-block h-3 w-3 animate-bounce rounded-full " />
-          </div>
-        </div>
+        <ProcessChat />
       ) : (
         <>
           {isUser ? (

@@ -62,12 +62,12 @@ const MessageAgent = ({message}:{message: Content}) => {
             h3: ({ children }) => (
               <h3 className="text-lg font-medium my-2">{children}</h3>
             ),
-            ul: ({ children }) => <ul className="pl-6 list-disc">{children}</ul>,
-            ol: ({ children }) => <ol className="pl-6 list-disc">{children}</ol>,
+            ul: ({ children }) => <ul className="pl-6 list-disc grid grid-cols-3 gap-2">{children}</ul>,
+            ol: ({ children }) => <ol className="pl-6 list-disc grid grid-cols-3 gap-2">{children}</ol>,
             li: ({ children }) => <li className="">{children}</li>,
             p: ({ children }) => <p className="my-2 leading-relaxed">{children}</p>,
             table: ({ children }) => (
-              <table className="table-auto border-collapse border  my-4 w-full text-sm">
+              <table className="table-auto border-collapse border  my-4 w-full text-sm rounded-xs">
                 {children}
               </table>
             ),
