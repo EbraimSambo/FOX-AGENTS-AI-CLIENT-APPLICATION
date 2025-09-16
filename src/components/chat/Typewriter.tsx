@@ -19,7 +19,6 @@ const Typewriter = ({
   useEffect(() => {
     let i = 0;
     const interval = setInterval(() => {
-      // If forceDone is true, complete immediately
       if (forceDone) {
         setDisplayedText(text);
         clearInterval(interval);
@@ -27,17 +26,19 @@ const Typewriter = ({
         onTypewriterComplete?.();
         return;
       }
-
-      setDisplayedText((prev) => prev + text.charAt(i));
-      i++;
-
+  
+      // velocidade dinâmica: mais longo = pula mais chars
+      const step = text.length > 500 ? 3 : 1; // se >500 chars, escreve 3 por vez
+      setDisplayedText((prev) => prev + text.slice(i, i + step));
+      i += step;
+  
       if (i >= text.length) {
         clearInterval(interval);
         onDone?.();
-        onTypewriterComplete?.(); // Call the new callback when typewriter completes naturally
+        onTypewriterComplete?.();
       }
     }, 10);
-
+  
     return () => clearInterval(interval);
   }, [text, onDone, onTypewriterComplete, forceDone]);
 
