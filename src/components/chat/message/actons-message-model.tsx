@@ -20,7 +20,7 @@ const ActonsMessageModel = ({content}:{content: Content}) => {
   return (
     <div className="flex space-x-1 transition-opacity duration-200">
     <button
-      onClick={() => navigator.clipboard.writeText(content.content)}
+      onClick={handleCopy}
       className="h-8 w-8 flex items-center justify-center text-white hover:text-gray-300"
     >
         {copied ? <Check size={16} /> : <Copy size={16} />}
