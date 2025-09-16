@@ -1,4 +1,5 @@
 import { Content } from '@/core/chat';
+import { RiPencilLine } from '@remixicon/react';
 import { Check, Copy, RotateCw } from 'lucide-react'
 import React from 'react'
 
@@ -8,8 +9,8 @@ interface Props {
 }
 
 const UserMenssage = ({ message, onRetry }: Props) => {
-   const [copied, setCopied] = React.useState(false);
-   const handleCopy = async () => {
+  const [copied, setCopied] = React.useState(false);
+  const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(message.content as string);
       setCopied(true);
@@ -34,12 +35,18 @@ const UserMenssage = ({ message, onRetry }: Props) => {
         >
           {copied ? <Check size={16} /> : <Copy size={16} />}
         </button>
-        {message.error?.trim() && (
+        {message.error?.trim() ? (
           <button
             onClick={onRetry}
             className="h-8 w-8 flex items-center justify-center text-white hover:text-gray-300"
           >
             <RotateCw className="size-4" />
+          </button>
+        ) : (
+          <button
+            className="h-8 w-8 flex items-center justify-center text-white hover:text-gray-300"
+          >
+            <RiPencilLine className="size-4" />
           </button>
         )}
       </div>
