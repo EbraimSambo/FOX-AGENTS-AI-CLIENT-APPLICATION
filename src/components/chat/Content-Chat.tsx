@@ -29,7 +29,7 @@ const ContentChat = ({
   return (
     <div className="w-full max-w-full pb-20 px-8 xl:px-0 pt-12 xl:pt-0">
       {messages.length > 0 && (
-        <div className="flex items-end h-full justify-end flex-col gap-4 mx-auto min-h-[dvh]">
+        <div className="flex items-end h-full justify-end flex-col gap-4 mx-auto min-h-[dvh] md:min-h-[100vh]">
           <AnimatePresence initial={false}>
             {messages.map((m) => (
               <Bubble

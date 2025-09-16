@@ -9,7 +9,7 @@ import DialogContent, {
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import React from "react";
-import { Search, SquarePen, TextSearch, X } from "lucide-react";
+import { ArrowLeft, Search, SquarePen, TextSearch, X } from "lucide-react";
 import { userGetChats } from "@/hooks/get-chat";
 import { ptBR } from "date-fns/locale";
 import { format, formatDistanceToNow, parseISO } from "date-fns";
@@ -18,6 +18,7 @@ import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ProgressCircle } from "@/components/ui/progress";
 import { useInView } from "react-intersection-observer";
+import { Button } from "@/components/ui/button";
 
 const Chats = () => {
   const [open, setIsOpen] = React.useState(false);
@@ -170,6 +171,16 @@ const Chats = () => {
             )}
           </div>
         </ScrollArea>
+        <DialogFooter className="px-6 py-4 border-t border-border">
+          <DialogClose asChild>
+            <Button type="button" variant="outline">
+              <ArrowLeft />
+            </Button>
+          </DialogClose>
+          <DialogClose asChild>
+            <Button type="button">Ok</Button>
+          </DialogClose>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
