@@ -157,9 +157,9 @@ const PromptAi = ({
             <div className="flex items-center gap-1 pr-2">
               <button
                 disabled={isPending}
-                className="h-10 w-10 flex items-center justify-center text-white rounded-md hover:bg-muted-foreground/20 transition-colors"
+                className="h-8 w-8  md:w-10 md:h-10 flex items-center justify-center text-white rounded-md hover:bg-muted-foreground/20 transition-colors"
               >
-                <RiAttachmentLine className="size-6" />
+                <RiAttachmentLine className="size-4 md:size-6" />
               </button>
               <button
                 onClick={() => {
@@ -170,15 +170,15 @@ const PromptAi = ({
                   }
                 }}
                 disabled={isButtonDisabled}
-                className={`h-10 w-10 flex items-center justify-center text-white rounded-md transition-colors ${isPending
+                className={`h-8 w-8  md:w-10 md:h-10 flex items-center justify-center text-white rounded-md transition-colors ${isPending
                   ? "bg-muted-foreground/20 animate-pulse hover:bg-muted-foreground/30"
                   : isButtonDisabled
                     ? "opacity-50 cursor-not-allowed"
                     : "hover:bg-muted-foreground/20"
                   }`}
               >
-                {!isPending && <RiSendPlaneLine className="size-5" />}
-                {isPending && <FaStop className="size-6" />}
+                {!isPending && <RiSendPlaneLine className="size-4 md:size-6" />}
+                {isPending && <FaStop className="size-4 md:size-6" />}
               </button>
             </div>
           </div>
