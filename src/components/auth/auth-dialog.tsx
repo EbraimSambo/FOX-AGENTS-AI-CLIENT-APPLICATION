@@ -30,10 +30,10 @@ const AuthDialog = () => {
             </div>
             <DialogContent className="sm:max-w-3xl w-full space-y-10 bg-[#262626] outline-none text-white border-none [&>button]:hidden" >
                 <div className="">
-                    <h2 className="text-center text-2xl">
+                    <h2 className="text-center text-base md:text-2xl ">
                         Conheça o seu companheiro de IA
                     </h2>
-                    <p className='text-center'>Crie uma conta ou inicie sessão para manter todas as suas conversas. </p>
+                    <p className='text-center text-sm md:text-base'>Crie uma conta ou inicie sessão para manter todas as suas conversas. </p>
                 </div>
 
                 <div className="flex items-center justify-center flex-col gap-4">
