@@ -1,6 +1,7 @@
 import { createAxiosInstance } from "@/config/axios";
-import { Content, Pagination } from "@/core/chat";
+import { Chat, Content, Pagination } from "@/core/chat";
 import { useInfiniteQuery } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 
 const axios = createAxiosInstance();
 
@@ -16,6 +17,30 @@ export const userGetMessagesByChatUUID = (chatUUID: string) => {
         .then((res) => res.data),
     initialPageParam: 1,
     enabled: !!chatUUID,
+    getNextPageParam: (lastPage) =>
+      lastPage.isHasPage ? lastPage.nextPage : undefined,
+    refetchOnWindowFocus: false,
+  });
+};
+
+
+export const userGetChats = () => {
+   const { data: session } = useSession()
+  return useInfiniteQuery({
+    queryKey: ["chats", session?.id],
+    queryFn: async ({ pageParam = 1 }) =>
+      axios
+        .get<Pagination<Chat>>(
+          `/chats?page=${pageParam}&limit=20`,
+          {
+            headers:{
+              "user-x-uuid": session?.id
+            }
+          },
+        )
+        .then((res) => res.data),
+    initialPageParam: 1,
+    enabled: !!session?.id,
     getNextPageParam: (lastPage) =>
       lastPage.isHasPage ? lastPage.nextPage : undefined,
     refetchOnWindowFocus: false,

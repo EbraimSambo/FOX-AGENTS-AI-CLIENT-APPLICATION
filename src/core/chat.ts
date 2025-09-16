@@ -24,3 +24,10 @@ export type Content = Omit<Message, "id" | "chatId" | "createdAt"> & {
   audioUrl?: string;
   isWriting: boolean;
 };
+
+
+export interface Chat {
+  title: string | null
+  uuid: string
+  createdAt: string
+}

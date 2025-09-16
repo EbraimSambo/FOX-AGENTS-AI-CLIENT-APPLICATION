@@ -9,6 +9,7 @@ import {
 import { createAxiosInstance } from "@/config/axios";
 import { AxiosError } from "axios";
 import { Content, Message, Pagination } from "@/core/chat";
+import { useSession } from "next-auth/react";
 
 const schema = z.object({
   prompt: z.string(),
@@ -21,6 +22,7 @@ interface Props {
   messages: Content[];
 }
 export const usePrompt = ({ chatUUID, setMessages, messages }: Props) => {
+  const { data: session } = useSession()
   const [lastMessageUser, setLastMessageUser] = React.useState<
     Content | undefined
   >(undefined);
@@ -43,6 +45,10 @@ export const usePrompt = ({ chatUUID, setMessages, messages }: Props) => {
       }>(`/chats/${chatUUID}`, {
         uuid: chatUUID,
         ...data,
+      },{
+        headers:{
+          "user-x-uuid": session?.id
+        }
       });
     },
     onError: (error: AxiosError) => {

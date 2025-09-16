@@ -11,174 +11,32 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import React from "react";
 import { useDirection } from "@radix-ui/react-direction";
 import { TextSearch, X } from "lucide-react";
+import { userGetChats } from "@/hooks/get-chat";
+import { ptBR } from "date-fns/locale";
+import { format, formatDate, formatDistanceToNow, parseISO } from "date-fns";
+import Link from "next/link";
 const Chats = () => {
-  const direction = useDirection();
+  const [open, setIsOpen] = React.useState(false);
+  const query = userGetChats() 
 
-  const faqSections = [
-    {
-      title: "Account Management",
-      content:
-        "Navigate to the registration page, provide the required information, and verify your email address. You can sign up using your email or through social media platforms.",
-    },
-    {
-      title: "Payment and Billing",
-      content:
-        "We accept all major credit cards, PayPal, and bank transfers. If you face issues, check your payment details or contact our support team.",
-    },
-    {
-      title: "Subscription Plans",
-      content:
-        "Choose a plan that fits your needs. Upgrade, downgrade, or cancel at any time from the subscription settings page in your account.",
-    },
-    {
-      title: "Technical Support",
-      content:
-        "Our support team is available 24/7 via live chat or email. Check our Help Center for troubleshooting guides and tips.",
-    },
-    {
-      title: "Privacy and Security",
-      content:
-        "Your data is encrypted and stored securely. We comply with GDPR and other privacy regulations to protect your information.",
-    },
-    {
-      title: "Feature Requests",
-      content:
-        "Got ideas for new features? Submit your request via the feedback form in the app or reach out to us directly.",
-    },
-    {
-      title: "Refund Policy",
-      content:
-        "If you're not satisfied with your purchase, you can request a refund within 14 days. Please review our refund policy for more details.",
-    },
-    {
-      title: "Mobile App Support",
-      content:
-        "Our platform is fully compatible with iOS and Android devices. Download our app from the App Store or Google Play.",
-    },
-    {
-      title: "User Roles and Permissions",
-      content:
-        "Admins can assign roles and permissions to other users. These roles determine the level of access within the platform.",
-    },
-    {
-      title: "Data Export",
-      content:
-        "You can export your data at any time from the account settings page. Available formats include CSV and PDF.",
-    },
-    {
-      title: "Integration Options",
-      content:
-        "Our platform integrates with popular tools like Slack, Zapier, and Google Workspace. Check the integration settings for more details.",
-    },
-    {
-      title: "Two-Factor Authentication",
-      content:
-        "Enable two-factor authentication (2FA) for enhanced security. Visit your account settings to activate this feature.",
-    },
-    {
-      title: "Custom Branding",
-      content:
-        "Customize the platform with your brand colors, logo, and more. This feature is available in premium plans.",
-    },
-    {
-      title: "Learning Resources",
-      content:
-        "Access tutorials, webinars, and guides in the Help Center to get the most out of our platform.",
-    },
-    {
-      title: "Account Recovery",
-      content:
-        "If you forget your password, click 'Forgot Password' on the login page to reset it. You can also contact support for assistance.",
-    },
-    {
-      title: "System Requirements",
-      content:
-        "Our platform supports the latest versions of Chrome, Firefox, Safari, and Edge. Ensure your browser is up to date for the best experience.",
-    },
-    {
-      title: "Trial Period",
-      content:
-        "We offer a 14-day free trial for new users. During this period, you can explore all premium features at no cost.",
-    },
-    {
-      title: "Data Backup",
-      content:
-        "Your data is automatically backed up daily to ensure it remains safe and recoverable in case of any issues.",
-    },
-    {
-      title: "Multi-Language Support",
-      content:
-        "Our platform is available in multiple languages. You can switch your preferred language in the account settings.",
-    },
-    {
-      title: "Notification Settings",
-      content:
-        "Manage your email and in-app notifications from the notification settings page. Customize what updates you want to receive.",
-    },
-    {
-      title: "Account Recovery",
-      content:
-        "If you forget your password, click 'Forgot Password' on the login page to reset it. You can also contact support for assistance.",
-    },
-    {
-      title: "System Requirements",
-      content:
-        "Our platform supports the latest versions of Chrome, Firefox, Safari, and Edge. Ensure your browser is up to date for the best experience.",
-    },
-    {
-      title: "Trial Period",
-      content:
-        "We offer a 14-day free trial for new users. During this period, you can explore all premium features at no cost.",
-    },
-    {
-      title: "Data Backup",
-      content:
-        "Your data is automatically backed up daily to ensure it remains safe and recoverable in case of any issues.",
-    },
-    {
-      title: "Multi-Language Support",
-      content:
-        "Our platform is available in multiple languages. You can switch your preferred language in the account settings.",
-    },
-    {
-      title: "Notification Settings",
-      content:
-        "Manage your email and in-app notifications from the notification settings page. Customize what updates you want to receive.",
-    },
-    {
-      title: "Account Recovery",
-      content:
-        "If you forget your password, click 'Forgot Password' on the login page to reset it. You can also contact support for assistance.",
-    },
-    {
-      title: "System Requirements",
-      content:
-        "Our platform supports the latest versions of Chrome, Firefox, Safari, and Edge. Ensure your browser is up to date for the best experience.",
-    },
-    {
-      title: "Trial Period",
-      content:
-        "We offer a 14-day free trial for new users. During this period, you can explore all premium features at no cost.",
-    },
-    {
-      title: "Data Backup",
-      content:
-        "Your data is automatically backed up daily to ensure it remains safe and recoverable in case of any issues.",
-    },
-    {
-      title: "Multi-Language Support",
-      content:
-        "Our platform is available in multiple languages. You can switch your preferred language in the account settings.",
-    },
-    {
-      title: "Notification Settings",
-      content:
-        "Manage your email and in-app notifications from the notification settings page. Customize what updates you want to receive.",
-    },
-  ];
-
+  const chats = query.data?.pages.flatMap((page) => page.items) || [];
+  const today = new Date().toISOString().split("T")[0];
+  const todayChats = chats.filter((chat) => chat.createdAt.split("T")[0] === today);
+  const last7DaysChats = chats.filter(
+    (chat) =>
+      chat.createdAt.split("T")[0] !== today &&
+      parseISO(chat.createdAt) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+  );
+  const formatChatDate = (isoDate: string) => {
+    const date = parseISO(isoDate);
+    const now = new Date();
+    const diffInDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
+    return diffInDays <= 7
+      ? `Há ${formatDistanceToNow(date, { locale: ptBR })}`
+      : format(date, "dd/MM/yyyy", { locale: ptBR });
+  };
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setIsOpen} >
       <DialogTrigger asChild className="px-1">
         <button className="h-9 w-9 rounded-md flex items-center justify-center hover:bg-muted-foreground/15">
           <TextSearch className="size-6" />
@@ -187,21 +45,57 @@ const Chats = () => {
       <DialogContent
         className="p-0 bg-[#323130] border-none text-white max-w-7xl w-full h-[80vh]"
         variant={"default"}
-        dir={direction}
       >
         <DialogHeader className="pt-5 pb-3 m-0 border-b border-muted-foreground">
           <DialogTitle className="px-6 text-base">
-            Frequently Asked Questions(FAQ)
+            Seus chats
           </DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
         <ScrollArea className="text-sm  h-full my-3 ps-6 pe-5 me-1">
           <div className="space-y-4 text-white">
-            {faqSections.map((faq, index) => (
-              <div key={index} className=" space-y-1">
-                <h2 className="text-white">{faq.title}</h2>
+          {(todayChats.length > 0 || last7DaysChats.length > 0) && (
+          <>
+            {todayChats.length > 0 && (
+              <div className="space-y-1">
+                <h2 className="text-[10px] pl-2 text-white">Hoje</h2>
+                {todayChats.map((chat) => (
+                  <Link
+                    href={`/chats/${chat.uuid}`}
+                    key={chat.uuid}
+                    // onMouseEnter={() => setChatRef(chat.ref)}
+                    onClick={() => setIsOpen(false)}
+                    className="p-2 h-10 w-full flex items-center justify-between gap-2 rounded-lg hover:bg-muted-foreground/75 transition-colors"
+                  >
+                    <span className="text-sm overflow-hidden text-ellipsis whitespace-nowrap max-w-[70%]">
+                      {chat.title}
+                    </span>
+                    <span className="text-[10px]">{formatChatDate(chat.createdAt)}</span>
+                  </Link>
+                ))}
               </div>
-            ))}
+            )}
+            {last7DaysChats.length > 0 && (
+              <div className="space-y-1">
+                <h2 className="text-[10px] pl-2 text-white">Últimos 7 dias</h2>
+                {last7DaysChats.map((chat) => (
+                  <Link
+                    href={`/chats/${chat.uuid}`}
+                    key={chat.title}
+                    // onMouseEnter={() => setChatRef(chat.ref)}
+                    onClick={() => setIsOpen(false)}
+                    className="p-2 h-10 w-full flex items-center justify-between gap-2 rounded-lg hover:bg-muted-foreground/75  transition-colors"
+                  >
+                    <span className="text-sm overflow-hidden text-ellipsis whitespace-nowrap max-w-[70%]">
+                      {chat.title}
+                    </span>
+                    <span className="text-[10px]">{formatChatDate(chat.createdAt)}</span>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </>
+        )}
           </div>
         </ScrollArea>
         <DialogFooter className="px-6 py-4 border-t border-muted-foreground">
