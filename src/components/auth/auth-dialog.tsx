@@ -1,5 +1,5 @@
 import React from 'react'
-import DialogContent, { Dialog,  } from '../ui/dialog';
+import DialogContent, { Dialog, } from '../ui/dialog';
 import { Button } from '../ui/button';
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub, FaGitlab } from 'react-icons/fa6';
@@ -37,12 +37,18 @@ const AuthDialog = () => {
                 </div>
 
                 <div className="flex items-center justify-center flex-col gap-4">
-                    <Button className='h-12 w-[320px] rounded-full font-bold bg-[#262626] border-muted-foreground border'>
-                        <FcGoogle />  Continuar com Google
+                    <Button onClick={() => providerSignIn("google")}  className='h-12 w-[320px] rounded-full font-bold bg-[#262626] border-muted-foreground border'>
+                        {loadingProvider === 'google' ? (
+                            <ProgressCircle value={15} size={15} strokeWidth={2} className="text-white animate-spin" />
+                        ) : (
+                            <>
+                                <FcGoogle />  Continuar com Google
+                            </>
+                        )}
                     </Button>
                     <Button onClick={() => providerSignIn("github")} className='h-12 w-[320px] rounded-full font-bold bg-[#262626] border-muted-foreground border'>
                         {loadingProvider === 'github' ? (
-                              <ProgressCircle value={15} size={15} strokeWidth={2} className="text-white animate-spin" />
+                            <ProgressCircle value={15} size={15} strokeWidth={2} className="text-white animate-spin" />
                         ) : (
                             <>
                                 <FaGithub /> Continuar com GitLab
@@ -51,10 +57,10 @@ const AuthDialog = () => {
                     </Button>
                     <Button onClick={() => providerSignIn("gitlab")} className='h-12 w-[320px] rounded-full font-bold bg-[#262626] border-muted-foreground border'>
                         {loadingProvider === 'gitlab' ? (
-                              <ProgressCircle value={15} size={15} strokeWidth={2} className="text-white animate-spin" />
+                            <ProgressCircle value={15} size={15} strokeWidth={2} className="text-white animate-spin" />
                         ) : (
                             <>
-                              <FaGitlab />  Continuar com Gitlab
+                                <FaGitlab />  Continuar com Gitlab
                             </>
                         )}
                     </Button>
