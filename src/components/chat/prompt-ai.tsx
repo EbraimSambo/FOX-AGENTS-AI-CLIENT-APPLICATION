@@ -95,21 +95,60 @@ const PromptAi = ({
               name="prompt"
               control={form.control}
               defaultValue=""
-              render={({ field }) => (
-                <textarea
-                  {...field}
-                  onChange={(e) => handleTextareaChange(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  placeholder="Alguma pergunta?"
-                  disabled={isPending}
-                  className="bg-transparent text-white placeholder-muted-foreground resize-none border-none outline-none w-full pr-12 min-h-[40px] max-h-[200px]"
-                  rows={1}
-                  style={{
-                    height: "auto",
-                    minHeight: "40px",
-                  }}
-                />
-              )}
+              render={({ field }) => {
+                const textareaRef = React.useRef<HTMLTextAreaElement | null>(null);
+
+                const adjustHeight = () => {
+                  if (textareaRef.current) {
+                    // Reset height to auto to get the correct scrollHeight
+                    textareaRef.current.style.height = "auto";
+
+                    // Get the scroll height
+                    const scrollHeight = textareaRef.current.scrollHeight;
+
+                    // Set minimum height (equivalent to 1 row)
+                    const minHeight = 40;
+
+                    // Set maximum height (equivalent to ~6-7 rows)
+                    const maxHeight = 160;
+
+                    // Calculate the new height
+                    const newHeight = Math.min(Math.max(scrollHeight, minHeight), maxHeight);
+
+                    // Apply the new height
+                    textareaRef.current.style.height = `${newHeight}px`;
+                  }
+                };
+
+                const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+                  field.onChange(e);
+                  handleTextareaChange(e.target.value);
+
+                  // Adjust height after the value change
+                  setTimeout(() => {
+                    adjustHeight();
+                  }, 0);
+                };
+
+                // Adjust height when component mounts or field value changes
+                React.useEffect(() => {
+                  adjustHeight();
+                }, [field.value]);
+
+                return (
+                  <textarea
+                    {...field}
+                    ref={textareaRef}
+                    onChange={handleChange}
+                    onKeyPress={handleKeyPress}
+                    placeholder="Alguma pergunta?"
+                    disabled={isPending}
+                    className="bg-transparent text-white placeholder-muted-foreground resize-none border-none outline-none w-full pr-12 min-h-[40px] max-h-[160px] overflow-y-auto"
+                    rows={1}
+                    style={{ height: '40px' }}
+                  />
+                );
+              }}
             />
           </div>
 
@@ -132,10 +171,10 @@ const PromptAi = ({
                 }}
                 disabled={isButtonDisabled}
                 className={`h-10 w-10 flex items-center justify-center text-white rounded-md transition-colors ${isPending
-                    ? "bg-muted-foreground/20 animate-pulse hover:bg-muted-foreground/30"
-                    : isButtonDisabled
-                      ? "opacity-50 cursor-not-allowed"
-                      : "hover:bg-muted-foreground/20"
+                  ? "bg-muted-foreground/20 animate-pulse hover:bg-muted-foreground/30"
+                  : isButtonDisabled
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:bg-muted-foreground/20"
                   }`}
               >
                 {!isPending && <RiSendPlaneLine className="size-5" />}
