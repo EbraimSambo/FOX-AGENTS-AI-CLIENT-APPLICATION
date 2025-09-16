@@ -123,7 +123,6 @@ const PromptAi = ({
                     handleSend();
                   }
                 }}
-                disabled={!form.watch("prompt")?.trim()}
                 className={`h-10 w-10 flex items-center justify-center text-white rounded-md  ${isPending && "bg-muted-foreground/20 animate-pulse"} hover:bg-muted-foreground/20 transition-colors`}
               >
                 {!isPending && <RiSendPlaneLine className="size-5" />}
