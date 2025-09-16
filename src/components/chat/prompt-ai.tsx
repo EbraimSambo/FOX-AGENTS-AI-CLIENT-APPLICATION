@@ -116,7 +116,7 @@ const PromptAi = ({
 
           <div className="relative flex items-center justify-between text-muted">
             <SwitcherModel />
-            <div className="flex items-center">
+            <div className="flex items-center gap-1">
               <button
                 disabled={isPending}
                 className="h-10 w-10 flex items-center justify-center text-white rounded-md hover:bg-muted-foreground/20 transition-colors"

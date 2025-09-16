@@ -1,11 +1,10 @@
 import { motion } from "framer-motion";
 import { RotateCw } from "lucide-react";
-import Markdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import React from "react";
 import { Content } from "@/core/chat";
 import { RiFileCopyLine } from "@remixicon/react";
-import Typewriter from "./Typewriter";
+import Typewriter from "../Typewriter";
+import MessageAgent from "./message-agent";
 
 interface Props {
   message: Content;
@@ -37,9 +36,9 @@ export const Bubble: React.FC<Props> = ({
       {message.pending ? (
         <div className="flex items-center gap-2">
           <div className="inline-flex gap-1">
-            <span className="bg-muted-foreground inline-block h-2 w-2 animate-bounce rounded-full [animation-delay:-0.2s]" />
-            <span className="bg-muted-foreground inline-block h-2 w-2 animate-bounce rounded-full [animation-delay:-0.1s]" />
-            <span className="bg-muted-foreground inline-block h-2 w-2 animate-bounce rounded-full " />
+            <span className="bg-muted-foreground inline-block h-3 w-3 animate-bounce rounded-full [animation-delay:-0.2s]" />
+            <span className="bg-muted-foreground inline-block h-3 w-3 animate-bounce rounded-full [animation-delay:-0.1s]" />
+            <span className="bg-muted-foreground inline-block h-3 w-3 animate-bounce rounded-full " />
           </div>
         </div>
       ) : (
@@ -69,12 +68,11 @@ export const Bubble: React.FC<Props> = ({
               </div>
             </div>
           ) : (
-            <div className="p-2 px-4 rounded-xl text-white break-words relative">
+            <div className="p-2 rounded-xl text-white break-words relative">
               {message.isWriting ? (
                 <Typewriter
                   text={message.content}
                   onDone={() => {
-                    // Apenas marca que terminou, não chama stopRequest
                     console.log(
                       "Typewriter finished for message:",
                       message.uuid,
@@ -84,9 +82,7 @@ export const Bubble: React.FC<Props> = ({
                   forceDone={forceDone}
                 />
               ) : (
-                <Markdown remarkPlugins={[remarkGfm]}>
-                  {message.content}
-                </Markdown>
+                <MessageAgent message={message} />
               )}
             </div>
           )}

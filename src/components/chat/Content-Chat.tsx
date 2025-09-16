@@ -1,7 +1,7 @@
 import React from "react";
 import { AnimatePresence } from "framer-motion";
 import { Content } from "@/core/chat";
-import { Bubble } from "./blulue";
+import { Bubble } from "./message/blulue";
 
 interface Props {
   messages: Content[];
