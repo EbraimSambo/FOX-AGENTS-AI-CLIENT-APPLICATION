@@ -27,7 +27,7 @@ const ContentChat = ({
   }, [messages]);
 
   return (
-    <div className="w-full max-w-full pb-20">
+    <div className="w-full max-w-full pb-20 px-8 xl:px-0">
       {messages.length > 0 && (
         <div className="flex items-end h-full justify-end flex-col gap-4 mx-auto min-h-screen">
           <AnimatePresence initial={false}>
