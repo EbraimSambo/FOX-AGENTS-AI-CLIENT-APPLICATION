@@ -6,6 +6,7 @@ import ContentChat from "./Content-Chat";
 import { usePrompt } from "@/hooks/use-prompt";
 import { userGetMessagesByChatUUID } from "@/hooks/get-chat";
 import LoaderChat from "./loader-chat";
+import { useQueryState } from "nuqs";
 
 interface Props {
   chatUUID: string;
@@ -14,6 +15,7 @@ interface Props {
 
 const Chat = ({ chatUUID }: Props) => {
   const query = userGetMessagesByChatUUID(chatUUID);
+  const [queryParams] = useQueryState("new");
   const [messages, setMessages] = React.useState<Content[]>([]);
   const [showLoader, setShowLoader] = React.useState(true);
   React.useEffect(() => {
@@ -62,8 +64,8 @@ const Chat = ({ chatUUID }: Props) => {
     setMessages,
     messages,
   });
-
-  if (query.isLoading || showLoader) return <LoaderChat />;
+  const isLoader = showLoader || query.isLoading
+  if (!queryParams && isLoader) return <LoaderChat />;
 
   return (
     <div className="max-w-3xl w-full mx-auto pt-12 pb-40 ">

@@ -2,6 +2,7 @@
 import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SessionProvider } from "next-auth/react"
+import { NuqsAdapter } from 'nuqs/adapters/next/app'
 
 const queryClient = new QueryClient();
 const Providers = ({
@@ -11,7 +12,9 @@ const Providers = ({
 }>) => {
   return (
     <SessionProvider >
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      <QueryClientProvider client={queryClient}>
+        <NuqsAdapter>{children}</NuqsAdapter>
+      </QueryClientProvider>
     </SessionProvider>
   );
 };

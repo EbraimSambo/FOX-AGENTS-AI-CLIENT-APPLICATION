@@ -8,7 +8,7 @@ const ButtonNewChat = () => {
 
   const handleClick = () => {
     const uuid = generateUUID();
-    router.push(`/chats/${uuid}`);
+    router.push(`/chats/${uuid}?new=true`);
   };
   return (
     <button

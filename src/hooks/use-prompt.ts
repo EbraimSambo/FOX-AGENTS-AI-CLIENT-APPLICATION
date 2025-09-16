@@ -8,6 +8,7 @@ import { createAxiosInstance } from "@/config/axios";
 import { AxiosError } from "axios";
 import { Content, Message, Pagination } from "@/core/chat";
 import { useSession } from "next-auth/react";
+import { useQueryState } from "nuqs";
 
 const schema = z.object({
   prompt: z.string(),
@@ -27,6 +28,7 @@ export const usePrompt = ({ chatUUID, setMessages, messages }: Props) => {
   >(undefined);
   const [isPending, setIsPending] = React.useState(false);
   const [forceDone, setForceDone] = React.useState(false);
+  const [_,setQueryParams] = useQueryState("new");
   const [abortController, setAbortController] =
     React.useState<AbortController | null>(null);
   const form = useForm<z.infer<typeof schema>>({
@@ -81,6 +83,7 @@ export const usePrompt = ({ chatUUID, setMessages, messages }: Props) => {
     },
     onSuccess: (res) => {
       setLastMessageUser(undefined);
+      setQueryParams("")
       queryClient.invalidateQueries({ queryKey: ["chats"] });
       const modelReply = res.data.messages.find((m) => m.role === "MODEL");
 

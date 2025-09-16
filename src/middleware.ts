@@ -19,11 +19,11 @@ export async function middleware(request: NextRequest) {
   const isChatRoute = /^\/chats\/[a-zA-Z0-9-]+$/.test(pathname);
 
   if (pathname === "/") {
-    return NextResponse.redirect(new URL(`/chats/${uuid}`, request.url));
+    return NextResponse.redirect(new URL(`/chats/${uuid}?new=true`, request.url));
   }
 
   if (!isChatRoute) {
-    return NextResponse.redirect(new URL(`/chats/${uuid}`, request.url));
+    return NextResponse.redirect(new URL(`/chats/${uuid}?new=true`, request.url));
   }
 
   return NextResponse.next();

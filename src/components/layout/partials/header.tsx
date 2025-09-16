@@ -14,7 +14,7 @@ const Header = () => {
   const router = useRouter();
   const handleClick = () => {
     const uuid = generateUUID();
-    router.push(`/chats/${uuid}`);
+    router.push(`/chats/${uuid}?new=true`);
   };
   return (
     <div className="fixed top-0 left-0 right-0 w-full text-white flex items-center justify-between p-4 px-8">
