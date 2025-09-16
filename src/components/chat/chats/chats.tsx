@@ -66,7 +66,7 @@ const Chats = () => {
         </button>
       </DialogTrigger>
       <DialogContent
-        className="p-0 bg-[#323130] border-none text-white max-w-7xl w-full h-[80vh] [&>button]:hidden "
+        className="p-0 bg-[#323130] border-none text-white max-w-7xl w-full h-[80vh] [&>button]:hidden z-90"
         variant={"default"}
       >
         <DialogHeader className="pt-5 pb-3 m-0 border-b border-muted-foreground">
@@ -171,16 +171,13 @@ const Chats = () => {
             )}
           </div>
         </ScrollArea>
-        <DialogFooter className="px-6 py-4 border-t border-border">
+        <div className="px-6 py-4 border-t border-border flex items-center justify-between">
           <DialogClose asChild>
-            <Button type="button" variant="outline">
+            <button className="" >
               <ArrowLeft />
-            </Button>
+            </button>
           </DialogClose>
-          <DialogClose asChild>
-            <Button type="button">Ok</Button>
-          </DialogClose>
-        </DialogFooter>
+        </div>
       </DialogContent>
     </Dialog>
   );
