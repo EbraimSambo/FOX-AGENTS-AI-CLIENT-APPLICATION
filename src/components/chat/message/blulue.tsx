@@ -38,7 +38,7 @@ export const Bubble: React.FC<Props> = ({
       ) : (
         <>
           {isUser ? (
-            <UserMenssage message={message} onRetry={onRetry}/>
+            <UserMenssage message={message} onRetry={onRetry} />
           ) : (
             <div className="p-2 rounded-xl text-white break-words relative">
               {message.isWriting ? (
@@ -54,7 +54,9 @@ export const Bubble: React.FC<Props> = ({
                   forceDone={forceDone}
                 />
               ) : (
-                <MessageAgent message={message} />
+                <>
+                {!message.error &&  <MessageAgent message={message} />}
+                </>
               )}
             </div>
           )}

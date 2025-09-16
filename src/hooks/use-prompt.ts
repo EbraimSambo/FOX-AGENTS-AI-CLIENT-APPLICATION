@@ -11,6 +11,7 @@ import { useSession } from "next-auth/react";
 
 const schema = z.object({
   prompt: z.string(),
+  model: z.string().optional(),
 });
 
 const axios = createAxiosInstance();
@@ -135,6 +136,7 @@ export const usePrompt = ({ chatUUID, setMessages, messages }: Props) => {
         role: "USER",
         content: value,
         isWriting: false,
+        model: "GEMINI"
       };
       const pendingModel: Content = {
         uuid: crypto.randomUUID(),
@@ -142,12 +144,15 @@ export const usePrompt = ({ chatUUID, setMessages, messages }: Props) => {
         content: "",
         pending: true,
         isWriting: false,
+        model: 'CLAUDE'
       };
       setMessages((prev) => [...prev, userMsg, pendingModel]);
       setLastMessageUser(userMsg);
       form.reset();
+      console.log(form.getValues("model"))
       mutation.mutate({
         prompt: value,
+        model:  form.getValues("model")
       });
       setSelectedCategory(undefined);
     }
@@ -183,6 +188,7 @@ export const usePrompt = ({ chatUUID, setMessages, messages }: Props) => {
       content: "",
       pending: true,
       isWriting: false,
+      model: "GEMINI"
     };
 
     setMessages((prev) => {

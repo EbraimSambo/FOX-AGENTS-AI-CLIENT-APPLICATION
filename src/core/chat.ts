@@ -8,6 +8,10 @@ export interface Pagination<T> {
   isHasPage: boolean;
 }
 
+export type TypeModel =
+ "GPT" |
+   "GEMINI" |   "CLAUDE"|"OLLAMA"
+
 export interface Message {
   chatId: number;
   content: string;
@@ -15,6 +19,7 @@ export interface Message {
   id: number;
   role: "USER" | "MODEL";
   uuid: string;
+  model: TypeModel 
 }
 
 export type Content = Omit<Message, "id" | "chatId" | "createdAt"> & {

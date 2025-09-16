@@ -12,13 +12,29 @@ import {
   MdOutlineRadioButtonChecked,
   MdOutlineRadioButtonUnchecked,
 } from "react-icons/md";
+import { UseFormReturn } from "react-hook-form";
 
-const SwitcherModel = () => {
+interface Props {
+  form: UseFormReturn<{
+    prompt: string;
+    model?: string | undefined;
+  }, any, {
+    prompt: string;
+    model?: string | undefined;
+  }>;
+}
+const SwitcherModel = ({ form }: Props) => {
   const [model, setModel] = React.useState(models[0]);
   const [open, setOpen] = React.useState(false);
+  React.useEffect(() => {
+    if (!form.watch("model")) {
+      form.setValue("model", models[0].type);
+    }
+  }, [form]);
   const handleModel = (model: (typeof models)[0]) => {
     setModel(model);
     setOpen(false);
+    form.setValue("model", model.type)
   };
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>

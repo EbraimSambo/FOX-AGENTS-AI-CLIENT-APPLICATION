@@ -25,10 +25,10 @@ interface Props {
   setSelectedCategory: React.Dispatch<
     React.SetStateAction<
       | {
-          category: string;
-          icon: RemixiconComponentType;
-          suggestions: string[];
-        }
+        category: string;
+        icon: RemixiconComponentType;
+        suggestions: string[];
+      }
       | undefined
     >
   >;
@@ -44,25 +44,24 @@ interface Props {
     AxiosError<unknown, any>,
     {
       prompt: string;
+      model?: string | undefined;
     },
     unknown
   >;
-  form: UseFormReturn<
-    {
-      prompt: string;
-    },
-    any,
-    {
-      prompt: string;
-    }
-  >;
+  form: UseFormReturn<{
+    prompt: string;
+    model?: string | undefined;
+  }, any, {
+    prompt: string;
+    model?: string | undefined;
+  }>;
   selectedCategory:
-    | {
-        category: string;
-        icon: RemixiconComponentType;
-        suggestions: string[];
-      }
-    | undefined;
+  | {
+    category: string;
+    icon: RemixiconComponentType;
+    suggestions: string[];
+  }
+  | undefined;
   isPending: boolean;
   stopRequest: () => void;
 }
@@ -82,7 +81,7 @@ const PromptAi = ({
 }: Props) => {
   const promptValue = form.watch("prompt") || "";
   const hasText = promptValue.trim().length > 0;
-  
+
   // Botão desabilitado quando não há texto E não está em execução
   const isButtonDisabled = !hasText && !isPending;
 
@@ -115,7 +114,7 @@ const PromptAi = ({
           </div>
 
           <div className="relative flex items-center justify-between text-muted">
-            <SwitcherModel />
+            <SwitcherModel form={form} />
             <div className="flex items-center gap-1">
               <button
                 disabled={isPending}
@@ -132,13 +131,12 @@ const PromptAi = ({
                   }
                 }}
                 disabled={isButtonDisabled}
-                className={`h-10 w-10 flex items-center justify-center text-white rounded-md transition-colors ${
-                  isPending 
-                    ? "bg-muted-foreground/20 animate-pulse hover:bg-muted-foreground/30" 
-                    : isButtonDisabled 
-                      ? "opacity-50 cursor-not-allowed" 
+                className={`h-10 w-10 flex items-center justify-center text-white rounded-md transition-colors ${isPending
+                    ? "bg-muted-foreground/20 animate-pulse hover:bg-muted-foreground/30"
+                    : isButtonDisabled
+                      ? "opacity-50 cursor-not-allowed"
                       : "hover:bg-muted-foreground/20"
-                }`}
+                  }`}
               >
                 {!isPending && <RiSendPlaneLine className="size-5" />}
                 {isPending && <FaStop className="size-6" />}
