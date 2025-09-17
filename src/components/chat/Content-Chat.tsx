@@ -27,7 +27,7 @@ const ContentChat = ({
   }, [messages]);
 
   return (
-    <div className="w-full max-w-full pb-20 px-8 xl:px-0 pt-12 xl:pt-0">
+    <div className="w-full max-w-full pb-10 px-8 xl:px-0 pt-12 xl:pt-0">
       {messages.length > 0 && (
         <div className="flex items-end h-full justify-end flex-col gap-4 mx-auto min-h-[dvh] md:min-h-[100vh]">
           <AnimatePresence initial={false}>
@@ -43,7 +43,7 @@ const ContentChat = ({
               />
             ))}
           </AnimatePresence>
-          <div ref={bottomRef} className="pb-10" />
+          <div ref={bottomRef} className="pb-6" />
         </div>
       )}
     </div>

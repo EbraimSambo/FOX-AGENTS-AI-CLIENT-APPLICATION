@@ -55,12 +55,12 @@ const Suggestions = ({
     }
   };
 
-  if (
-    textareaValue.trim() &&
-    !suggestions.some((cat) => cat.category === textareaValue.trim())
-  ) {
-    return null;
-  }
+  // if (
+  //   textareaValue.trim() &&
+  //   !suggestions.some((cat) => cat.category === textareaValue.trim())
+  // ) {
+  //   return null;
+  // }
 
   return (
     <div className="text-white px-8 hidden xl:block h-[340px]">
