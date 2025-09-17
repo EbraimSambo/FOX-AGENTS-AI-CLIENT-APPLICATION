@@ -3,14 +3,13 @@ import React from "react";
 import {
   RemixiconComponentType,
   RiAttachmentLine,
-  RiMic2Line,
   RiSendPlaneLine,
 } from "@remixicon/react";
 import SwitcherModel from "./switcher-model";
 import Suggestions from "./suggestions";
 import { Controller, UseFormReturn } from "react-hook-form";
 import { FaStop } from "react-icons/fa6";
-import { Content, Message } from "@/core/chat";
+import {  Message } from "@/core/chat";
 import { AxiosError, AxiosResponse } from "axios";
 import { UseMutationResult } from "@tanstack/react-query";
 import GreetUser from "./greet-user";
@@ -84,6 +83,17 @@ const PromptAi = ({
 
   // Botão desabilitado quando não há texto E não está em execução
   const isButtonDisabled = !hasText && !isPending;
+
+  // Função para limpar categoria e textarea se necessário
+  const handleClearCategory = () => {
+    if (selectedCategory && promptValue.trim() === selectedCategory.category) {
+      // Se o textarea contém exatamente o nome da categoria, limpa o textarea
+      form.setValue("prompt", "");
+      handleTextareaChange("");
+    }
+    // Remove a categoria selecionada
+    setSelectedCategory(undefined);
+  };
 
   return (
     <div className=" fixed bottom-0 right-0 left-0 bg-[#262626] px-8 xl:px-0">
@@ -190,6 +200,7 @@ const PromptAi = ({
             textareaValue={promptValue}
             onSuggestionClick={handleSuggestionClick}
             onCategoryClick={handleCategoryClick}
+            onClearCategory={handleClearCategory}
           />
         )}
       </div>
