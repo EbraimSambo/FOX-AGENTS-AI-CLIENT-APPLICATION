@@ -82,9 +82,9 @@ const Suggestions = ({
       )}
       {selectedCategory &&
         textareaValue.trim() === selectedCategory.category && (
-          <ScrollArea className="h-[340px]">
-            <div className=" shadow rounded-lg p-2 bg-[#323130]">
-              <div className="flex items-center justify-between px-2">
+          <ScrollArea className="h-[340px] relative">
+            <div className=" shadow rounded-lg p-2 bg-[#323130] pt-14">
+              <div className="flex items-center justify-between p-2 px-4 absolute top-0 right-0 left-0 w-full bg-[#323130] rounded-t-lg border-b border-muted-foreground">
                 <div className="flex items-center gap-2">
                   {<selectedCategory.icon className="size-4" />}
                   <h2 className="text-sm">{selectedCategory.category}</h2>
@@ -96,7 +96,6 @@ const Suggestions = ({
                   <X className="size-5" />
                 </button>
               </div>
-              <Separator className="bg-muted-foreground my-2 px-4" />
               {selectedCategory.suggestions.map((suggestion, index) => (
                 <div
                   className="p-3 cursor-pointer hover:bg-muted-foreground/20 rounded-md text-sm transition-colors duration-150 border border-transparent hover:border-muted-foreground/30"
