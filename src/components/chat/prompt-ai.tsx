@@ -128,7 +128,7 @@ const PromptAi = ({
 
   return (
     <div className=" fixed bottom-0 right-0 left-0 bg-[#262626] px-8 xl:px-0">
-      <div className="space-y-8 max-w-4xl w-full mx-auto pb-10 xl:pb-30">
+      <div className="space-y-8 max-w-4xl w-full mx-auto pb-10 xl:pb-15">
         {showSuggestions && <GreetUser />}
         <div className="relative w-full shadow rounded-2xl p-4 space-y-2 bg-muted-foreground/15">
           <div className="w-full">

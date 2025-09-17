@@ -63,7 +63,7 @@ const Suggestions = ({
   }
 
   return (
-    <div className="text-white px-8 hidden xl:block">
+    <div className="text-white px-8 hidden xl:block h-[340px]">
       {!selectedCategory && (
         <div className="space-y-3">
           <div className="flex items-center flex-wrap ">
