@@ -82,7 +82,7 @@ const Suggestions = ({
       )}
       {selectedCategory &&
         textareaValue.trim() === selectedCategory.category && (
-          <ScrollArea className="h-[340px] relative">
+          <ScrollArea className="h-[340px] relative rounded-t-lg">
             <div className=" shadow rounded-lg p-2 bg-[#323130] pt-14">
               <div className="flex items-center justify-between p-2 px-4 absolute top-0 right-0 left-0 w-full bg-[#323130] rounded-t-lg border-b border-muted-foreground">
                 <div className="flex items-center gap-2">
