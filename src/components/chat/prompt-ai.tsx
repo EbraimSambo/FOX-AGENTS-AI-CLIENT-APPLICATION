@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import {
   RemixiconComponentType,
   RiAttachmentLine,
@@ -80,6 +80,8 @@ const PromptAi = ({
 }: Props) => {
   const promptValue = form.watch("prompt") || "";
   const hasText = promptValue.trim().length > 0;
+  const [previewText, setPreviewText] = useState<string>("");
+  const [isHovering, setIsHovering] = useState<boolean>(false);
 
   // Botão desabilitado quando não há texto E não está em execução
   const isButtonDisabled = !hasText && !isPending;
@@ -93,6 +95,35 @@ const PromptAi = ({
     }
     // Remove a categoria selecionada
     setSelectedCategory(undefined);
+    // Limpa o preview também
+    setPreviewText("");
+    setIsHovering(false);
+  };
+
+  const handleSuggestionHover = (text: string) => {
+    setPreviewText(text);
+    setIsHovering(true);
+  };
+
+  const handleSendWithClear = () => {
+    // Primeiro limpa o preview para forçar o displayValue a usar field.value
+    setPreviewText("");
+    setIsHovering(false);
+    
+    // Chama a função original de envio
+    handleSend();
+    
+    // Limpa o formulário e o textarea após enviar
+    form.setValue("prompt", "");
+    handleTextareaChange("");
+    
+    // Remove categoria selecionada
+    setSelectedCategory(undefined);
+  };
+
+  const handleSuggestionLeave = () => {
+    setPreviewText("");
+    setIsHovering(false);
   };
 
   return (
@@ -130,30 +161,37 @@ const PromptAi = ({
                   }
                 };
 
-                const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-                  field.onChange(e);
-                  handleTextareaChange(e.target.value);
-
-                  // Adjust height after the value change
-                  setTimeout(() => {
-                    adjustHeight();
-                  }, 0);
-                };
-
                 // Adjust height when component mounts or field value changes
                 React.useEffect(() => {
                   adjustHeight();
                 }, [field.value]);
 
+                // Valor a ser mostrado no textarea
+                // Força a usar field.value se estivermos limpando (field.value vazio)
+                const displayValue = (isHovering && previewText && field.value.trim() !== "") 
+                  ? previewText 
+                  : field.value;
+                
                 return (
                   <textarea
-                    {...field}
                     ref={textareaRef}
-                    onChange={handleChange}
+                    value={displayValue}
+                    onChange={(e) => {
+                      // Só atualiza o formulário se não estiver mostrando preview
+                      if (!isHovering || !previewText) {
+                        field.onChange(e);
+                        handleTextareaChange(e.target.value);
+                        setTimeout(() => {
+                          adjustHeight();
+                        }, 0);
+                      }
+                    }}
                     onKeyPress={handleKeyPress}
                     placeholder="Alguma pergunta?"
                     disabled={isPending}
-                    className="bg-transparent text-white placeholder-muted-foreground resize-none border-none outline-none w-full pr-12 min-h-[40px] max-h-[160px] overflow-y-auto"
+                    className={`bg-transparent text-white placeholder-muted-foreground resize-none border-none outline-none w-full pr-12 min-h-[40px] max-h-[160px] overflow-y-auto ${
+                      isHovering && previewText ? 'text-muted-foreground italic' : ''
+                    }`}
                     rows={1}
                     style={{ height: '40px' }}
                   />
@@ -176,7 +214,7 @@ const PromptAi = ({
                   if (isPending) {
                     stopRequest();
                   } else {
-                    handleSend();
+                    handleSendWithClear();
                   }
                 }}
                 disabled={isButtonDisabled}
@@ -201,6 +239,8 @@ const PromptAi = ({
             onSuggestionClick={handleSuggestionClick}
             onCategoryClick={handleCategoryClick}
             onClearCategory={handleClearCategory}
+            onSuggestionHover={handleSuggestionHover}
+            onSuggestionLeave={handleSuggestionLeave}
           />
         )}
       </div>

@@ -27,7 +27,9 @@ interface Props {
   textareaValue: string;
   onSuggestionClick: (suggestion: string) => void;
   onCategoryClick: (categoryName: string) => void;
-  onClearCategory: () => void; // Nova prop para limpar categoria
+  onClearCategory: () => void;
+  onSuggestionHover?: (previewText: string) => void;
+  onSuggestionLeave?: () => void;
 }
 
 const Suggestions = ({
@@ -36,8 +38,23 @@ const Suggestions = ({
   onSuggestionClick,
   onCategoryClick,
   setSelectedCategory,
-  onClearCategory, // Recebe a função de clear do componente pai
+  onClearCategory,
+  onSuggestionHover,
+  onSuggestionLeave,
 }: Props) => {
+  const handleSuggestionMouseEnter = (suggestion: string) => {
+    if (selectedCategory && onSuggestionHover) {
+      const previewText = `${selectedCategory.category}: ${suggestion}`;
+      onSuggestionHover(previewText);
+    }
+  };
+
+  const handleSuggestionMouseLeave = () => {
+    if (onSuggestionLeave) {
+      onSuggestionLeave();
+    }
+  };
+
   if (
     textareaValue.trim() &&
     !suggestions.some((cat) => cat.category === textareaValue.trim())
@@ -72,8 +89,8 @@ const Suggestions = ({
                   {<selectedCategory.icon className="size-4" />}
                   <h2 className="text-sm">{selectedCategory.category}</h2>
                 </div>
-                <button 
-                  onClick={onClearCategory} // Chama a função de clear
+                <button
+                  onClick={onClearCategory}
                   className="flex items-center justify-center h-8 w-8 hover:bg-muted-foreground/20 rounded-md transition-colors"
                 >
                   <X className="size-5" />
@@ -85,6 +102,8 @@ const Suggestions = ({
                   className="p-3 cursor-pointer hover:bg-muted-foreground/20 rounded-md text-sm transition-colors duration-150 border border-transparent hover:border-muted-foreground/30"
                   key={index}
                   onClick={() => onSuggestionClick(suggestion)}
+                  onMouseEnter={() => handleSuggestionMouseEnter(suggestion)}
+                  onMouseLeave={handleSuggestionMouseLeave}
                 >
                   {suggestion}
                 </div>
