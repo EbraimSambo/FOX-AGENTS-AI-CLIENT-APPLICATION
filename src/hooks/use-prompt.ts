@@ -1,12 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { use } from "react";
+import React  from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import { suggestions } from "../components/chat/data-suggestions";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createAxiosInstance } from "@/config/axios";
 import { AxiosError } from "axios";
-import { Content, Message, Pagination } from "@/core/chat";
+import { Content, Message,TypeModel } from "@/core/chat";
 import { useSession } from "next-auth/react";
 import { useQueryState } from "nuqs";
 
@@ -167,7 +167,7 @@ export const usePrompt = ({ chatUUID, setMessages, messages }: Props) => {
     setForceDone(false);
     const files = form.getValues("files");
     const model = form.getValues("model");
-    const value = form.getValues("prompt") || `Descreva esta${files && files?.length > 1 ? "s":""} imagen${files && files?.length > 1 ? "s":""}`;
+    const value = form.getValues("prompt") || `Descreva por favor`;
 
     
     console.log("Sending data:", { value, files, model });
@@ -179,7 +179,7 @@ export const usePrompt = ({ chatUUID, setMessages, messages }: Props) => {
       role: "USER",
       content: value || `Descreva esta${files && files?.length > 1 ? "s":""} imagen${files && files?.length > 1 ? "s":""}`,
       isWriting: false,
-      model: "GEMINI",
+      model: form.getValues("model")  as TypeModel,
       attachments: blobs.map((blob)=>({
         url: blob,
         type: blob
@@ -192,7 +192,7 @@ export const usePrompt = ({ chatUUID, setMessages, messages }: Props) => {
       content: "",
       pending: true,
       isWriting: false,
-      model: 'CLAUDE',
+      model: form.getValues("model")  as TypeModel,
       attachments: []
     };
     
@@ -240,7 +240,7 @@ export const usePrompt = ({ chatUUID, setMessages, messages }: Props) => {
       content: "",
       pending: true,
       isWriting: false,
-      model: "GEMINI",
+      model: form.getValues("model")  as TypeModel,
       attachments: blobs.map((blob)=>({
         url: blob,
         type: blob
