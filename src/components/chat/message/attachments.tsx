@@ -13,35 +13,41 @@ interface Props {
   attachments: {
     url: string;
     name?: string; // Nome do arquivo (opcional)
+    type: string
   }[]
 }
 
 const Attachments = ({ attachments }: Props) => {
   // Função para determinar o tipo de arquivo
-  const getFileType = (url: string, name?: string) => {
+  const getFileType = (url: string, name?: string, type?: string) => {
+    if (type) {
+      if (type.startsWith("image/")) return "image";
+      if (type.startsWith("video/")) return "video";
+      if (type.startsWith("audio/")) return "audio";
+      if (type === "application/pdf" || type.includes("word") || type.includes("text"))
+        return "document";
+      if (type.includes("zip") || type.includes("rar") || type.includes("tar"))
+        return "archive";
+    }
+  
+    // fallback pelo nome (extensão)
     const fileName = name || url;
-    const extension = fileName.split('.').pop()?.toLowerCase() || '';
-    
-    // Extensões de imagem
-    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp'];
-    // Extensões de vídeo
-    const videoExtensions = ['mp4', 'avi', 'mov', 'wmv', 'flv', 'webm', 'mkv'];
-    // Extensões de áudio
-    const audioExtensions = ['mp3', 'wav', 'ogg', 'flac', 'aac', 'm4a'];
-    // Extensões de documento
-    const documentExtensions = ['pdf', 'doc', 'docx', 'txt', 'rtf', 'odt'];
-    // Extensões de arquivo comprimido
-    const archiveExtensions = ['zip', 'rar', '7z', 'tar', 'gz'];
-    
-    if (imageExtensions.includes(extension)) return 'image';
-    if (videoExtensions.includes(extension)) return 'video';
-    if (audioExtensions.includes(extension)) return 'audio';
-    if (documentExtensions.includes(extension)) return 'document';
-    if (archiveExtensions.includes(extension)) return 'archive';
-    
-    return 'file';
+    const extension = fileName.split(".").pop()?.toLowerCase() || "";
+  
+    const imageExtensions = ["jpg","jpeg","png","gif","webp","svg","bmp"];
+    const videoExtensions = ["mp4","avi","mov","wmv","flv","webm","mkv"];
+    const audioExtensions = ["mp3","wav","ogg","flac","aac","m4a"];
+    const documentExtensions = ["pdf","doc","docx","txt","rtf","odt"];
+    const archiveExtensions = ["zip","rar","7z","tar","gz"];
+  
+    if (imageExtensions.includes(extension)) return "image";
+    if (videoExtensions.includes(extension)) return "video";
+    if (audioExtensions.includes(extension)) return "audio";
+    if (documentExtensions.includes(extension)) return "document";
+    if (archiveExtensions.includes(extension)) return "archive";
+  
+    return "file";
   };
-
   // Função para obter o ícone apropriado
   const getFileIcon = (type: string) => {
     const iconProps = { size: 24, className: "text-gray-600" };
@@ -73,7 +79,7 @@ const Attachments = ({ attachments }: Props) => {
   return (
     <div className="flex items-center justify-end w-full gap-4 flex-wrap mt-2">
       {attachments.map((attachment, index) => {
-        const fileType = getFileType(attachment.url, attachment.name);
+       const fileType = getFileType(attachment.url, attachment.name, (attachment).type);
         const fileName = getFileName(attachment.url, attachment.name);
         
         if (fileType === 'image') {

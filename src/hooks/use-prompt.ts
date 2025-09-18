@@ -179,9 +179,9 @@ export const usePrompt = ({ chatUUID, setMessages, messages }: Props) => {
       content: value || `Descreva esta${files && files?.length > 1 ? "s":""} imagen${files && files?.length > 1 ? "s":""}`,
       isWriting: false,
       model: form.getValues("model")  as TypeModel,
-      attachments: blobs.map((blob)=>({
-        url: blob,
-        type: blob
+      attachments: files?.map((file) => ({
+        url: URL.createObjectURL(file),
+        type: file.type,  // pega o tipo MIME
       })) || []
     };
     
@@ -201,6 +201,7 @@ export const usePrompt = ({ chatUUID, setMessages, messages }: Props) => {
     // CORREÇÃO: Resetar apenas o prompt, manter model e limpar files
     form.setValue("prompt", "");
     form.setValue("files", undefined);
+    console.log(form.getValues("files"))
     // NÃO fazer form.reset() completo
     
     mutation.mutate({
