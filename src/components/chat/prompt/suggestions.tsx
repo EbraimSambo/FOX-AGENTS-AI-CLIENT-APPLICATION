@@ -1,10 +1,9 @@
 import React from "react";
-import { suggestions } from "./data-suggestions";
-import { Button } from "../ui/button";
-import { ScrollArea } from "../ui/scroll-area";
 import { RemixiconComponentType } from "@remixicon/react";
 import { X } from "lucide-react";
-import { Separator } from "../ui/separator";
+import { Button } from "@/components/ui/button";
+import { suggestions } from "../data-suggestions";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface Props {
   selectedCategory:
@@ -84,7 +83,7 @@ const Suggestions = ({
         textareaValue.trim() === selectedCategory.category && (
           <ScrollArea className="h-[340px] relative rounded-t-lg">
             <div className=" shadow rounded-lg p-2 bg-[#323130] pt-14">
-              <div className="flex items-center justify-between p-2 px-4 absolute top-0 right-0 left-0 w-full bg-[#323130] rounded-t-lg border-b border-muted-foreground">
+              <div className="flex items-center justify-between p-2 px-4 pr-3 absolute top-0 right-0 left-0 w-full bg-[#323130] rounded-t-lg border-b border-muted-foreground">
                 <div className="flex items-center gap-2">
                   {<selectedCategory.icon className="size-4" />}
                   <h2 className="text-sm">{selectedCategory.category}</h2>

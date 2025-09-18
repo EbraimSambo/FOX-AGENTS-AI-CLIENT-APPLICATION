@@ -1,6 +1,7 @@
 import { Content } from '@/core/chat';
 import { RiPencilLine } from '@remixicon/react';
 import { Check, Copy, RotateCw } from 'lucide-react'
+import Image from 'next/image';
 import React from 'react'
 
 interface Props {
@@ -27,6 +28,18 @@ const UserMenssage = ({ message, onRetry }: Props) => {
         <p className="text-sm font-bold text-white p-2 px-4 max-w-full rounded-xl bg-muted-foreground/20 shadow-md break-words overflow-hidden">
           {message.content}
         </p>
+      </div>
+      <div className="flex items-center justify-end w-full gap-4 flex-wrap mt-2">
+        {message.attachments.map((image) => (
+          <div className="relative w-20 h-20 cursor-pointer" key={image.url}>
+            <Image
+              alt={image.url}
+              src={image.url}
+              className='rounded-2xl object-cover'
+              fill
+            />
+          </div>
+        ))}
       </div>
       <div className="flex justify-end px-2 space-x-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
         <button

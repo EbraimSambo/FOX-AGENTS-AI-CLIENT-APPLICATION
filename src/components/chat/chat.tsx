@@ -1,8 +1,8 @@
 "use client";
 import { Content } from "@/core/chat";
 import React from "react";
-import PromptAi from "./prompt-ai";
-import ContentChat from "./Content-Chat";
+import PromptAi from "./prompt/prompt-ai";
+import ContentChat from "./message/Content-Chat";
 import { usePrompt } from "@/hooks/use-prompt";
 import { userGetMessagesByChatUUID } from "@/hooks/get-chat";
 import LoaderChat from "./loader-chat";
@@ -52,12 +52,10 @@ const Chat = ({ chatUUID }: Props) => {
     handleSend,
     setSelectedCategory,
     selectedCategory,
-    mutation,
     isPending,
     handleRetry,
     stopRequest,
     forceDone,
-    setForceDone,
     handleTypewriterComplete, // Adicione esta nova função
   } = usePrompt({
     chatUUID,
@@ -70,9 +68,7 @@ const Chat = ({ chatUUID }: Props) => {
   return (
     <div className="max-w-3xl w-full mx-auto pt-12 pb-40 ">
       <ContentChat
-        setForceDone={setForceDone}
         forceDone={forceDone}
-        stopRequest={stopRequest}
         handleRetry={handleRetry}
         messages={messages}
         handleTypewriterComplete={handleTypewriterComplete} // Passe a função para ContentChat
@@ -87,7 +83,6 @@ const Chat = ({ chatUUID }: Props) => {
         handleSend={handleSend}
         handleSuggestionClick={handleSuggestionClick}
         handleTextareaChange={handleTextareaChange}
-        mutation={mutation}
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
       />

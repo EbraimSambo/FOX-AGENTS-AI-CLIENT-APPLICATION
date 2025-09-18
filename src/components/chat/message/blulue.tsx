@@ -9,8 +9,6 @@ import UserMenssage from "./user-menssage";
 interface Props {
   message: Content;
   onRetry: () => void;
-  stopRequest: () => void;
-  setForceDone: React.Dispatch<React.SetStateAction<boolean>>;
   forceDone: boolean;
   handleTypewriterComplete: () => void;
 }
@@ -18,9 +16,7 @@ interface Props {
 export const Bubble: React.FC<Props> = ({
   message,
   onRetry,
-  stopRequest,
   forceDone,
-  setForceDone,
   handleTypewriterComplete,
 }) => {
   const isUser = message.role === "USER";

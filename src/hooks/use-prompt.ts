@@ -11,16 +11,20 @@ import { useSession } from "next-auth/react";
 import { useQueryState } from "nuqs";
 
 const schema = z.object({
-  prompt: z.string(),
+  prompt: z.string().optional(),
   model: z.string().optional(),
+  files: z
+  .array(z.instanceof(File)).optional(),
 });
 
 const axios = createAxiosInstance();
+
 interface Props {
   chatUUID: string;
   setMessages: React.Dispatch<React.SetStateAction<Content[]>>;
   messages: Content[];
 }
+
 export const usePrompt = ({ chatUUID, setMessages, messages }: Props) => {
   const { data: session } = useSession();
   const [lastMessageUser, setLastMessageUser] = React.useState<
@@ -38,21 +42,50 @@ export const usePrompt = ({ chatUUID, setMessages, messages }: Props) => {
     (typeof suggestions)[0] | undefined
   >(undefined);
   const queryClient = useQueryClient();
+  
   const mutation = useMutation({
     mutationFn: async (data: z.infer<typeof schema>) => {
+      const formData = new FormData();
+      
+      // Adicionar prompt
+      if (data.prompt) {
+        formData.append("prompt", data.prompt);
+      }
+      
+      // Adicionar model se existir
+      if (data.model) {
+        formData.append("model", data.model);
+      }
+      
+      // Adicionar UUID do chat
+      formData.append("uuid", chatUUID);
+      
+      // Adicionar arquivos
+      if (Array.isArray(data.files) && data.files.length > 0) {
+        data.files.forEach((file) => {
+          if (file instanceof File) {
+            formData.append("files", file);
+          }
+        });
+      }
+      
+      console.log("FormData contents:");
+      for (let [key, value] of formData.entries()) {
+        console.log(key, value);
+      }
+      
+      // CORREÇÃO PRINCIPAL: Enviar o FormData diretamente, não dentro de um objeto
       return axios.post<{
         title: string;
         messages: Array<Message>;
       }>(
         `/chats/${chatUUID}`,
-        {
-          uuid: chatUUID,
-          ...data,
-        },
+        formData, // Enviar FormData diretamente
         {
           headers: {
             "user-x-uuid": session?.id,
             "user-x-name": session?.user?.name,
+            // Não definir Content-Type manualmente - deixar o browser definir com boundary
           },
         },
       );
@@ -131,34 +164,49 @@ export const usePrompt = ({ chatUUID, setMessages, messages }: Props) => {
 
   const handleSend = () => {
     setIsPending(true);
-    setForceDone(false); // Reset forceDone when sending new message
-    const value = form.getValues("prompt");
-    if (value.trim()) {
-      const userMsg: Content = {
-        uuid: crypto.randomUUID(),
-        role: "USER",
-        content: value,
-        isWriting: false,
-        model: "GEMINI"
-      };
-      const pendingModel: Content = {
-        uuid: crypto.randomUUID(),
-        role: "MODEL",
-        content: "",
-        pending: true,
-        isWriting: false,
-        model: 'CLAUDE'
-      };
-      setMessages((prev) => [...prev, userMsg, pendingModel]);
-      setLastMessageUser(userMsg);
-      form.reset();
-      console.log(form.getValues("model"))
-      mutation.mutate({
-        prompt: value,
-        model:  form.getValues("model")
-      });
-      setSelectedCategory(undefined);
-    }
+    setForceDone(false);
+    const files = form.getValues("files");
+    const model = form.getValues("model");
+    const value = form.getValues("prompt") || `Descreva esta${files && files?.length > 1 ? "s":""} imagen${files && files?.length > 1 ? "s":""}`;
+
+    
+    console.log("Sending data:", { value, files, model });
+    const blobs =  files?.map((file)=>URL.createObjectURL(file)) || []
+    
+    
+    const userMsg: Content = {
+      uuid: crypto.randomUUID(),
+      role: "USER",
+      content: value || `Descreva esta${files && files?.length > 1 ? "s":""} imagen${files && files?.length > 1 ? "s":""}`,
+      isWriting: false,
+      model: "GEMINI",
+      attachments: blobs.map((blob)=>({
+        url: blob,
+        type: blob
+      })) || []
+    };
+    
+    const pendingModel: Content = {
+      uuid: crypto.randomUUID(),
+      role: "MODEL",
+      content: "",
+      pending: true,
+      isWriting: false,
+      model: 'CLAUDE',
+      attachments: []
+    };
+    
+    setMessages((prev) => [...prev, userMsg, pendingModel]);
+    setLastMessageUser(userMsg);
+    form.reset();
+    
+    mutation.mutate({
+      prompt: value,
+      model: model,
+      files: files || []
+    });
+    
+    setSelectedCategory(undefined);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -170,7 +218,7 @@ export const usePrompt = ({ chatUUID, setMessages, messages }: Props) => {
 
   function handleRetry(failedMessageId: string) {
     setIsPending(true);
-    setForceDone(false); // Reset forceDone when retrying
+    setForceDone(false);
     const failedMessage = messages.find((m) => m.uuid === failedMessageId);
     if (!failedMessage) return;
 
@@ -184,14 +232,19 @@ export const usePrompt = ({ chatUUID, setMessages, messages }: Props) => {
             .find((m) => m.role === "USER");
 
     if (!userMessage) return;
-
+    const files = form.getValues("files");
+    const blobs =  files?.map((file)=>URL.createObjectURL(file)) || []
     const pendingModel: Content = {
       uuid: crypto.randomUUID(),
       role: "MODEL",
       content: "",
       pending: true,
       isWriting: false,
-      model: "GEMINI"
+      model: "GEMINI",
+      attachments: blobs.map((blob)=>({
+        url: blob,
+        type: blob
+      })) || []
     };
 
     setMessages((prev) => {
@@ -211,20 +264,23 @@ export const usePrompt = ({ chatUUID, setMessages, messages }: Props) => {
     });
 
     setLastMessageUser(userMessage);
-    mutation.mutate({ prompt: userMessage.content });
+    mutation.mutate({ 
+      prompt: userMessage.content,
+      model: form.getValues("model"),
+      files: form.getValues("files") || []
+    });
   }
 
   function stopRequest() {
-    // Cancel the ongoing HTTP request
     if (abortController) {
       abortController.abort();
     }
 
+    form.reset()
     setIsPending(false);
     setForceDone(true);
     setAbortController(null);
 
-    // Update any pending messages to show they were cancelled
     setMessages((prev) =>
       prev.map((m) =>
         m.pending
@@ -238,14 +294,11 @@ export const usePrompt = ({ chatUUID, setMessages, messages }: Props) => {
     );
   }
 
-  // New function to handle when typewriter finishes
   function handleTypewriterComplete() {
-    // Only set isPending to false if the request wasn't manually stopped
     if (!forceDone) {
       setIsPending(false);
     }
 
-    // Update the message to mark isWriting as false
     setMessages((prev) =>
       prev.map((m) => (m.isWriting ? { ...m, isWriting: false } : m)),
     );
@@ -266,6 +319,6 @@ export const usePrompt = ({ chatUUID, setMessages, messages }: Props) => {
     stopRequest,
     forceDone,
     setForceDone,
-    handleTypewriterComplete, // Add this new function
+    handleTypewriterComplete,
   };
 };

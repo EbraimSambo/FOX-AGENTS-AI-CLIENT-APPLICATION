@@ -16,12 +16,14 @@ import { UseFormReturn } from "react-hook-form";
 
 interface Props {
   form: UseFormReturn<{
-    prompt: string;
+    prompt?: string | undefined;
     model?: string | undefined;
-  }, any, {
-    prompt: string;
+    files?: File[] | undefined;
+}, any, {
+    prompt?: string | undefined;
     model?: string | undefined;
-  }>;
+    files?: File[] | undefined;
+}>
 }
 const SwitcherModel = ({ form }: Props) => {
   const [model, setModel] = React.useState(models[0]);

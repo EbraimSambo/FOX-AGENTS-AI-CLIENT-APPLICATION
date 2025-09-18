@@ -5,7 +5,10 @@ import remarkGfm from 'remark-gfm'
 import CodeMessage from './code-message'
 import Image from 'next/image'
 import ActonsMessageModel from './actons-message-model'
-const MessageAgent = ({ message }: { message: Content }) => {
+interface Props {
+  message: Content,
+}
+const MessageAgent = ({ message, }: Props) => {
   const components: Components = {
     code({ inline, className, children, ...props }: any) {
       const match = /language-(\w+)/.exec(className || '')

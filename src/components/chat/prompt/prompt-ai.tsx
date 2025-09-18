@@ -5,14 +5,15 @@ import {
   RiAttachmentLine,
   RiSendPlaneLine,
 } from "@remixicon/react";
-import SwitcherModel from "./switcher-model";
-import Suggestions from "./suggestions";
+import SwitcherModel from "../switcher-model";
 import { Controller, UseFormReturn } from "react-hook-form";
 import { FaStop } from "react-icons/fa6";
-import {  Message } from "@/core/chat";
+import { Message } from "@/core/chat";
 import { AxiosError, AxiosResponse } from "axios";
 import { UseMutationResult } from "@tanstack/react-query";
-import GreetUser from "./greet-user";
+import Suggestions from "./suggestions";
+import ShowIamgesSelected from "./show-iamges";
+import GreetUser from "@/components/user/greet-user";
 
 interface Props {
   showSuggestions: boolean;
@@ -31,28 +32,14 @@ interface Props {
       | undefined
     >
   >;
-  mutation: UseMutationResult<
-    AxiosResponse<
-      {
-        title: string;
-        messages: Array<Message>;
-      },
-      any,
-      {}
-    >,
-    AxiosError<unknown, any>,
-    {
-      prompt: string;
-      model?: string | undefined;
-    },
-    unknown
-  >;
   form: UseFormReturn<{
-    prompt: string;
+    prompt?: string | undefined;
     model?: string | undefined;
+    files?: File[] | undefined;
   }, any, {
-    prompt: string;
+    prompt?: string | undefined;
     model?: string | undefined;
+    files?: File[] | undefined;
   }>;
   selectedCategory:
   | {
@@ -80,11 +67,15 @@ const PromptAi = ({
 }: Props) => {
   const promptValue = form.watch("prompt") || "";
   const hasText = promptValue.trim().length > 0;
+  const watchedFiles = form.watch('files');
   const [previewText, setPreviewText] = useState<string>("");
   const [isHovering, setIsHovering] = useState<boolean>(false);
+  const fileInputRef = React.useRef<HTMLInputElement | null>(null)
 
   // Botão desabilitado quando não há texto E não está em execução
-  const isButtonDisabled = !hasText && !isPending;
+  // Verifica se há texto ou arquivos
+  const hasFiles = watchedFiles && watchedFiles.length > 0;
+  const isButtonDisabled = !hasText && !hasFiles && !isPending;
 
   // Função para limpar categoria e textarea se necessário
   const handleClearCategory = () => {
@@ -109,14 +100,14 @@ const PromptAi = ({
     // Primeiro limpa o preview para forçar o displayValue a usar field.value
     setPreviewText("");
     setIsHovering(false);
-    
+
     // Chama a função original de envio
     handleSend();
-    
+
     // Limpa o formulário e o textarea após enviar
     form.setValue("prompt", "");
     handleTextareaChange("");
-    
+
     // Remove categoria selecionada
     setSelectedCategory(undefined);
   };
@@ -126,11 +117,13 @@ const PromptAi = ({
     setIsHovering(false);
   };
 
+
   return (
     <div className=" fixed bottom-0 right-0 left-0 bg-[#262626] px-8 xl:px-0">
       <div className="space-y-8 max-w-4xl w-full mx-auto pb-10 xl:pb-15">
         {showSuggestions && <GreetUser />}
         <div className="relative w-full shadow rounded-2xl p-4 space-y-2 bg-muted-foreground/15">
+          <ShowIamgesSelected form={form} fileInputRef={fileInputRef} />
           <div className="w-full">
             <Controller
               name="prompt"
@@ -168,10 +161,10 @@ const PromptAi = ({
 
                 // Valor a ser mostrado no textarea
                 // Força a usar field.value se estivermos limpando (field.value vazio)
-                const displayValue = (isHovering && previewText && field.value.trim() !== "") 
-                  ? previewText 
+                const displayValue = (isHovering && previewText && field.value !== "")
+                  ? previewText
                   : field.value;
-                
+
                 return (
                   <textarea
                     ref={textareaRef}
@@ -189,9 +182,8 @@ const PromptAi = ({
                     onKeyPress={handleKeyPress}
                     placeholder="Alguma pergunta?"
                     disabled={isPending}
-                    className={`bg-transparent text-white placeholder-muted-foreground resize-none border-none outline-none w-full pr-12 min-h-[40px] max-h-[160px] overflow-y-auto ${
-                      isHovering && previewText ? 'text-muted-foreground italic' : ''
-                    }`}
+                    className={`bg-transparent text-white placeholder-muted-foreground resize-none border-none outline-none w-full pr-12 min-h-[40px] max-h-[160px] overflow-y-auto ${isHovering && previewText ? 'text-muted-foreground italic' : ''
+                      }`}
                     rows={1}
                     style={{ height: '40px' }}
                   />
@@ -205,6 +197,7 @@ const PromptAi = ({
             <div className="flex items-center gap-1 pr-2">
               <button
                 disabled={isPending}
+                onClick={() => fileInputRef.current?.click()}
                 className="h-8 w-8  md:w-10 md:h-10 flex items-center justify-center text-white rounded-md hover:bg-muted-foreground/20 transition-colors"
               >
                 <RiAttachmentLine className="size-4 md:size-6" />
