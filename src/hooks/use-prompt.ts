@@ -74,24 +74,22 @@ export const usePrompt = ({ chatUUID, setMessages, messages }: Props) => {
         console.log(key, value);
       }
       
-      // CORREÇÃO PRINCIPAL: Enviar o FormData diretamente, não dentro de um objeto
       return axios.post<{
         title: string;
         messages: Array<Message>;
       }>(
         `/chats/${chatUUID}`,
-        formData, // Enviar FormData diretamente
+        formData,
         {
           headers: {
             "user-x-uuid": session?.id,
             "user-x-name": session?.user?.name,
-            // Não definir Content-Type manualmente - deixar o browser definir com boundary
           },
         },
       );
     },
     onError: (error: AxiosError) => {
-      setIsPending(false);
+      setIsPending(false); // CORREÇÃO: Garantir que isPending seja false em caso de erro
       console.log(error);
       setMessages((prev) =>
         prev.map((m) => {
@@ -115,6 +113,7 @@ export const usePrompt = ({ chatUUID, setMessages, messages }: Props) => {
       setLastMessageUser(undefined);
     },
     onSuccess: (res) => {
+      // CORREÇÃO: Não definir isPending como false aqui, deixar para handleTypewriterComplete
       setLastMessageUser(undefined);
       setQueryParams("")
       queryClient.invalidateQueries({ queryKey: ["chats"] });
@@ -198,7 +197,11 @@ export const usePrompt = ({ chatUUID, setMessages, messages }: Props) => {
     
     setMessages((prev) => [...prev, userMsg, pendingModel]);
     setLastMessageUser(userMsg);
-    form.reset();
+    
+    // CORREÇÃO: Resetar apenas o prompt, manter model e limpar files
+    form.setValue("prompt", "");
+    form.setValue("files", undefined);
+    // NÃO fazer form.reset() completo
     
     mutation.mutate({
       prompt: value,
@@ -276,7 +279,10 @@ export const usePrompt = ({ chatUUID, setMessages, messages }: Props) => {
       abortController.abort();
     }
 
-    form.reset()
+    // CORREÇÃO: Não resetar o form completamente, apenas limpar prompt e files
+    form.setValue("prompt", "");
+    form.setValue("files", undefined);
+    
     setIsPending(false);
     setForceDone(true);
     setAbortController(null);
@@ -296,7 +302,7 @@ export const usePrompt = ({ chatUUID, setMessages, messages }: Props) => {
 
   function handleTypewriterComplete() {
     if (!forceDone) {
-      setIsPending(false);
+      setIsPending(false); // CORREÇÃO: Definir isPending como false aqui
     }
 
     setMessages((prev) =>

@@ -99,7 +99,10 @@ const Suggestions = ({
                 <div
                   className="p-3 cursor-pointer hover:bg-muted-foreground/20 rounded-md text-sm transition-colors duration-150 border border-transparent hover:border-muted-foreground/30"
                   key={index}
-                  onClick={() => onSuggestionClick(suggestion)}
+                  onClick={() => {
+                    onSuggestionClick(suggestion);
+                    if (onSuggestionLeave) onSuggestionLeave(); // limpa preview na hora do clique
+                  }}
                   onMouseEnter={() => handleSuggestionMouseEnter(suggestion)}
                   onMouseLeave={handleSuggestionMouseLeave}
                 >

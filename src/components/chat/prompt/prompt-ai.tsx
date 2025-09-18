@@ -158,7 +158,8 @@ const PromptAi = ({
 
                 // Valor a ser mostrado no textarea
                 // Força a usar field.value se estivermos limpando (field.value vazio)
-                const displayValue = (isHovering && previewText && field.value !== "")
+                const displayValue =
+                isHovering && previewText && field.value?.trim() === ""
                   ? previewText
                   : field.value;
 
