@@ -8,12 +8,9 @@ import {
 import SwitcherModel from "../switcher-model";
 import { Controller, UseFormReturn } from "react-hook-form";
 import { FaStop } from "react-icons/fa6";
-import { Message } from "@/core/chat";
-import { AxiosError, AxiosResponse } from "axios";
-import { UseMutationResult } from "@tanstack/react-query";
 import Suggestions from "./suggestions";
-import ShowIamgesSelected from "./show-iamges";
 import GreetUser from "@/components/user/greet-user";
+import ShowFilesSelected from "./show-files";
 
 interface Props {
   showSuggestions: boolean;
@@ -123,7 +120,7 @@ const PromptAi = ({
       <div className="space-y-8 max-w-4xl w-full mx-auto pb-10 xl:pb-15">
         {showSuggestions && <GreetUser />}
         <div className="relative w-full shadow rounded-2xl p-4 space-y-2 bg-muted-foreground/15">
-          <ShowIamgesSelected form={form} fileInputRef={fileInputRef} />
+          <ShowFilesSelected form={form} fileInputRef={fileInputRef} />
           <div className="w-full">
             <Controller
               name="prompt"

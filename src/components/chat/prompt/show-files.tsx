@@ -1,4 +1,4 @@
-import { X, Upload } from 'lucide-react'
+import { X, Upload, FileText, Image as ImageIcon, Video, Music } from 'lucide-react'
 import React from 'react'
 import { UseFormReturn } from 'react-hook-form'
 import { useDropzone } from 'react-dropzone'
@@ -17,7 +17,7 @@ interface DropFilesProps {
   }>
 }
 
-const ShowImagesSelected = ({ fileInputRef, form }: DropFilesProps) => {
+const ShowFilesSelected = ({ fileInputRef, form }: DropFilesProps) => {
   const watchedFiles = form.watch('files')
   const files = React.useMemo(() => watchedFiles || [], [watchedFiles])
   const [isDragging, setIsDragging] = React.useState(false)
@@ -76,7 +76,15 @@ const ShowImagesSelected = ({ fileInputRef, form }: DropFilesProps) => {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
-      'image/*': ['.jpeg', '.jpg', '.png', '.gif', '.webp']
+      'image/*': ['.jpeg', '.jpg', '.png', '.gif', '.webp', '.svg'],
+      'video/*': ['.mp4', '.avi', '.mov', '.wmv', '.flv', '.webm'],
+      'audio/*': ['.mp3', '.wav', '.ogg', '.aac', '.flac'],
+      'application/pdf': ['.pdf'],
+      'application/msword': ['.doc'],
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
+      'text/plain': ['.txt'],
+      'application/vnd.ms-excel': ['.xls'],
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx']
     },
     multiple: true,
     noClick: false,
@@ -98,8 +106,25 @@ const ShowImagesSelected = ({ fileInputRef, form }: DropFilesProps) => {
     form.setValue('files', updatedFiles)
   }
 
-  const createImagePreview = (file: File): string => {
-    return URL.createObjectURL(file)
+  const getFileIcon = (file: File) => {
+    const fileType = file.type
+
+    if (fileType.startsWith('image/')) {
+      return <ImageIcon className="w-8 h-8 text-blue-500" />
+    } else if (fileType.startsWith('video/')) {
+      return <Video className="w-8 h-8 text-red-500" />
+    } else if (fileType.startsWith('audio/')) {
+      return <Music className="w-8 h-8 text-green-500" />
+    } else {
+      return <FileText className="w-8 h-8 text-yellow-500" />
+    }
+  }
+
+  const createFilePreview = (file: File): string | null => {
+    if (file.type.startsWith('image/')) {
+      return URL.createObjectURL(file)
+    }
+    return null
   }
 
   return (
@@ -127,7 +152,7 @@ const ShowImagesSelected = ({ fileInputRef, form }: DropFilesProps) => {
               ou clique para selecionar arquivos
             </p>
             <p className="text-xs text-gray-400 dark:text-gray-500">
-              Suporta: JPEG, PNG, GIF, WebP
+              Suporta: Imagens, Vídeos, Áudios e Documentos
             </p>
           </div>
         )}
@@ -139,7 +164,7 @@ const ShowImagesSelected = ({ fileInputRef, form }: DropFilesProps) => {
         type="file"
         className="hidden"
         multiple
-        accept="image/*"
+        accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt,.xls,.xlsx"
         onChange={handleFileSelect}
       />
 
@@ -150,25 +175,39 @@ const ShowImagesSelected = ({ fileInputRef, form }: DropFilesProps) => {
             Arquivos selecionados ({files.length})
           </h3>
           <div className="flex items-center gap-4 flex-wrap">
-            {files.map((file, index) => (
-              <div className="relative h-20 w-20" key={index}>
-                <button
-                  onClick={() => removeFile(index)}
-                  className="flex items-center justify-center h-6 w-6 hover:bg-red-600 rounded-full z-10 transition-colors absolute -top-2 -right-2 bg-red-500 text-white"
-                  title={`Remover ${file.name}`}
-                >
-                  <X className="size-3" />
-                </button>
-                <div className="relative w-full h-full">
-                  <Image
-                    alt={file.name}
-                    src={createImagePreview(file)}
-                    className="rounded-lg object-cover border border-gray-200 dark:border-gray-700"
-                    fill
-                  />
+            {files.map((file, index) => {
+              const isImage = file.type.startsWith('image/')
+              const preview = createFilePreview(file)
+              
+              return (
+                <div className="relative h-20 w-20" key={index}>
+                  <button
+                    onClick={() => removeFile(index)}
+                    className="flex items-center justify-center h-6 w-6 hover:bg-red-600 rounded-full z-10 transition-colors absolute -top-2 -right-2 bg-red-500 text-white"
+                    title={`Remover ${file.name}`}
+                  >
+                    <X className="size-3" />
+                  </button>
+                  <div className="relative w-full h-full rounded-lg overflow-hidden">
+                    {isImage && preview ? (
+                      <Image
+                        alt={file.name}
+                        src={preview}
+                        className="object-cover"
+                        fill
+                      />
+                    ) : (
+                      <div className="flex flex-col items-center justify-center h-full bg-gray-100 dark:bg-gray-800">
+                        {getFileIcon(file)}
+                        <span className="text-xs text-gray-600 dark:text-gray-400 mt-1 truncate w-full px-1 text-center">
+                          {file.name.split('.').pop()?.toUpperCase()}
+                        </span>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       )}
@@ -176,4 +215,4 @@ const ShowImagesSelected = ({ fileInputRef, form }: DropFilesProps) => {
   )
 }
 
-export default ShowImagesSelected
+export default ShowFilesSelected
