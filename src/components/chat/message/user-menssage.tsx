@@ -33,6 +33,7 @@ const UserMenssage = ({ message, onRetry }: Props) => {
         {message.attachments.map((image) => (
           <div className="relative w-20 h-20 cursor-pointer" key={image.url}>
             <Image
+              priority
               alt={image.url}
               src={image.url}
               className='rounded-2xl object-cover'
