@@ -36,30 +36,25 @@ const Suggestions = ({
   textareaValue,
   onSuggestionClick,
   onCategoryClick,
-  setSelectedCategory,
   onClearCategory,
   onSuggestionHover,
   onSuggestionLeave,
 }: Props) => {
   const handleSuggestionMouseEnter = (suggestion: string) => {
     if (selectedCategory && onSuggestionHover) {
+      // Corrigindo a formatação do preview text
       const previewText = `${selectedCategory.category}: ${suggestion}`;
+      console.log("Sending preview text:", previewText); // Debug
       onSuggestionHover(previewText);
     }
   };
 
   const handleSuggestionMouseLeave = () => {
+    console.log("Mouse left suggestion"); // Debug
     if (onSuggestionLeave) {
       onSuggestionLeave();
     }
   };
-
-  // if (
-  //   textareaValue.trim() &&
-  //   !suggestions.some((cat) => cat.category === textareaValue.trim())
-  // ) {
-  //   return null;
-  // }
 
   return (
     <div className="text-white px-8 hidden xl:block h-[340px]">

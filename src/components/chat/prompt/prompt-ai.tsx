@@ -69,7 +69,6 @@ const PromptAi = ({
   const [isHovering, setIsHovering] = useState<boolean>(false);
   const fileInputRef = React.useRef<HTMLInputElement | null>(null)
 
-  // Botão desabilitado quando não há texto E não está em execução
   // Verifica se há texto ou arquivos
   const hasFiles = watchedFiles && watchedFiles.length > 0;
   const isButtonDisabled = !hasText && !hasFiles && !isPending;
@@ -77,35 +76,26 @@ const PromptAi = ({
   // Função para limpar categoria e textarea se necessário
   const handleClearCategory = () => {
     if (selectedCategory && promptValue.trim() === selectedCategory.category) {
-      // Se o textarea contém exatamente o nome da categoria, limpa o textarea
       form.setValue("prompt", "");
       handleTextareaChange("");
     }
-    // Remove a categoria selecionada
     setSelectedCategory(undefined);
-    // Limpa o preview também
     setPreviewText("");
     setIsHovering(false);
   };
 
   const handleSuggestionHover = (text: string) => {
+    console.log("Preview text received:", text); // Debug
     setPreviewText(text);
     setIsHovering(true);
   };
 
   const handleSendWithClear = () => {
-    // Primeiro limpa o preview para forçar o displayValue a usar field.value
     setPreviewText("");
     setIsHovering(false);
-
-    // Chama a função original de envio
     handleSend();
-
-    // Limpa o formulário e o textarea após enviar
     form.setValue("prompt", "");
     handleTextareaChange("");
-
-    // Remove categoria selecionada
     setSelectedCategory(undefined);
   };
 
@@ -113,7 +103,6 @@ const PromptAi = ({
     setPreviewText("");
     setIsHovering(false);
   };
-
 
   return (
     <div className=" fixed bottom-0 right-0 left-0 bg-[#262626] px-8 xl:px-0">
@@ -131,37 +120,30 @@ const PromptAi = ({
 
                 const adjustHeight = () => {
                   if (textareaRef.current) {
-                    // Reset height to auto to get the correct scrollHeight
                     textareaRef.current.style.height = "auto";
-
-                    // Get the scroll height
                     const scrollHeight = textareaRef.current.scrollHeight;
-
-                    // Set minimum height (equivalent to 1 row)
                     const minHeight = 40;
-
-                    // Set maximum height (equivalent to ~6-7 rows)
                     const maxHeight = 160;
-
-                    // Calculate the new height
                     const newHeight = Math.min(Math.max(scrollHeight, minHeight), maxHeight);
-
-                    // Apply the new height
                     textareaRef.current.style.height = `${newHeight}px`;
                   }
                 };
 
-                // Adjust height when component mounts or field value changes
                 React.useEffect(() => {
                   adjustHeight();
-                }, [field.value]);
+                }, [field.value, previewText]); // Adiciona previewText como dependência
 
-                // Valor a ser mostrado no textarea
-                // Força a usar field.value se estivermos limpando (field.value vazio)
-                const displayValue =
-                isHovering && previewText && field.value?.trim() === ""
-                  ? previewText
-                  : field.value;
+                // Lógica corrigida para mostrar o preview
+                const displayValue = React.useMemo(() => {
+                  // Se está fazendo hover e tem preview text, mostra o preview
+                  if (isHovering && previewText) {
+                    return previewText;
+                  }
+                  // Caso contrário, mostra o valor do campo
+                  return field.value || "";
+                }, [isHovering, previewText, field.value]);
+
+                console.log("Display value:", displayValue, "IsHovering:", isHovering, "Preview:", previewText); // Debug
 
                 return (
                   <textarea
@@ -180,8 +162,9 @@ const PromptAi = ({
                     onKeyPress={handleKeyPress}
                     placeholder="Alguma pergunta?"
                     disabled={isPending}
-                    className={`bg-transparent text-white placeholder-muted-foreground resize-none border-none outline-none w-full pr-12 min-h-[40px] max-h-[160px] overflow-y-auto ${isHovering && previewText ? 'text-muted-foreground italic' : ''
-                      }`}
+                    className={`bg-transparent text-white placeholder-muted-foreground resize-none border-none outline-none w-full pr-12 min-h-[40px] max-h-[160px] overflow-y-auto ${
+                      isHovering && previewText ? 'text-muted-foreground/70 italic' : ''
+                    }`}
                     rows={1}
                     style={{ height: '40px' }}
                   />
