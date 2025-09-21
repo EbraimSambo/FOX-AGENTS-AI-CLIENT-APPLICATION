@@ -95,7 +95,7 @@ const Suggestions = ({
                   className="p-3 cursor-pointer hover:bg-muted-foreground/20 rounded-md text-sm transition-colors duration-150 border border-transparent hover:border-muted-foreground/30"
                   key={index}
                   onClick={() => {
-                    onSuggestionClick(suggestion);
+                    onSuggestionClick(`${selectedCategory.category}: ${suggestion}`);
                     if (onSuggestionLeave) onSuggestionLeave(); // limpa preview na hora do clique
                   }}
                   onMouseEnter={() => handleSuggestionMouseEnter(suggestion)}
